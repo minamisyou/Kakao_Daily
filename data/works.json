@@ -28,16 +28,6 @@
       "source": { "type": "wikisource", "lang": "ko", "page": "운수 좋은 날" }
     },
     {
-      "id": "na_dohyang_samnyong",
-      "track": "kr",
-      "title": "벙어리 삼룡이",
-      "author": "나도향",
-      "author_death": 1926,
-      "published": 1925,
-      "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
-      "source": { "type": "wikisource", "lang": "ko", "page": "벙어리 삼룡이" }
-    },
-    {
       "id": "yi_sang_wings",
       "track": "kr",
       "title": "날개",
@@ -58,8 +48,26 @@
       "author_death": 1849,
       "published": 1843,
       "source_url": "https://www.gutenberg.org/ebooks/2148",
-      "source": { "type": "gutenberg", "ebook_id": 2148 },
+      "source": {
+        "type": "gutenberg",
+        "ebook_id": 2148,
+        "_note": "Gutenberg에 이 단편만 담긴 판본이 없다 — 전집(The Works of Edgar Allan Poe, Volume II)에서 excerpt_after/excerpt_before로 이 작품만 잘라낸다.",
+        "excerpt_after": "True!—nervous—very, very dreadfully nervous",
+        "excerpt_before": "BERENICE"
+      },
       "translation_by": "Claude (전문 완역, 회차별로 저장소에서 확인·수정 가능)"
+    }
+  ],
+
+  "_backlog_kr": [
+    {
+      "id": "na_dohyang_samnyong",
+      "title": "벙어리 삼룡이",
+      "author": "나도향",
+      "author_death": 1926,
+      "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
+      "source": { "type": "wikisource", "lang": "ko", "page": "벙어리 삼룡이" },
+      "status": "fetch_sources.py가 '== 라이선스 ==' 상용구만 받아왔다 (19바이트). 본문이 하위 문서로 나뉘어 있거나 문서 제목이 다른 것으로 보인다. 위키문헌에서 실제 문서 구조를 확인하고 source.page를 고친 뒤 works로 옮길 것."
     }
   ],
 
