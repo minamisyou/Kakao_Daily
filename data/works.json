@@ -1,0 +1,102 @@
+{
+  "_comment": [
+    "연재 대상 작품 목록. 저작권 만료(사후 70년 경과) 작품만 싣는다.",
+    "author_death는 만료 판단 근거이므로 작품을 추가할 때 반드시 채운다.",
+    "source.type은 원문 수집·대조 스크립트가 어디서 전문을 가져올지 결정한다."
+  ],
+  "works": [
+    {
+      "id": "kim_yujeong_bombom",
+      "track": "kr",
+      "title": "봄·봄",
+      "author": "김유정",
+      "author_death": 1937,
+      "published": 1935,
+      "source_url": "https://ko.wikisource.org/wiki/봄봄",
+      "source": { "type": "wikisource", "lang": "ko", "page": "봄봄" }
+    },
+    {
+      "id": "hyeon_jingeon_lucky_day",
+      "track": "kr",
+      "title": "운수 좋은 날",
+      "author": "현진건",
+      "author_death": 1943,
+      "published": 1924,
+      "source_url": "https://ko.wikisource.org/wiki/운수_좋은_날",
+      "source": { "type": "wikisource", "lang": "ko", "page": "운수 좋은 날" }
+    },
+    {
+      "id": "na_dohyang_samnyong",
+      "track": "kr",
+      "title": "벙어리 삼룡이",
+      "author": "나도향",
+      "author_death": 1926,
+      "published": 1925,
+      "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
+      "source": { "type": "wikisource", "lang": "ko", "page": "벙어리 삼룡이" }
+    },
+    {
+      "id": "yi_sang_wings",
+      "track": "kr",
+      "title": "날개",
+      "author": "이상",
+      "author_death": 1937,
+      "published": 1936,
+      "source_url": "https://ko.wikisource.org/wiki/날개",
+      "source": { "type": "wikisource", "lang": "ko", "page": "날개" }
+    },
+
+    {
+      "id": "austen_pride_prejudice",
+      "track": "en",
+      "title": "오만과 편견",
+      "title_original": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "author_ko": "제인 오스틴",
+      "author_death": 1817,
+      "published": 1813,
+      "source_url": "https://www.gutenberg.org/ebooks/1342",
+      "source": { "type": "gutenberg", "ebook_id": 1342 },
+      "translation_by": "Claude (빌드 시점 번역, 저장소에서 수정 가능)"
+    },
+    {
+      "id": "dickens_two_cities",
+      "track": "en",
+      "title": "두 도시 이야기",
+      "title_original": "A Tale of Two Cities",
+      "author": "Charles Dickens",
+      "author_ko": "찰스 디킨스",
+      "author_death": 1870,
+      "published": 1859,
+      "source_url": "https://www.gutenberg.org/ebooks/98",
+      "source": { "type": "gutenberg", "ebook_id": 98 },
+      "translation_by": "Claude (빌드 시점 번역, 저장소에서 수정 가능)"
+    },
+    {
+      "id": "poe_tell_tale_heart",
+      "track": "en",
+      "title": "고자질하는 심장",
+      "title_original": "The Tell-Tale Heart",
+      "author": "Edgar Allan Poe",
+      "author_ko": "에드거 앨런 포",
+      "author_death": 1849,
+      "published": 1843,
+      "source_url": "https://www.gutenberg.org/ebooks/2148",
+      "source": { "type": "gutenberg", "ebook_id": 2148 },
+      "translation_by": "Claude (빌드 시점 번역, 저장소에서 수정 가능)"
+    },
+    {
+      "id": "shelley_frankenstein",
+      "track": "en",
+      "title": "프랑켄슈타인",
+      "title_original": "Frankenstein",
+      "author": "Mary Shelley",
+      "author_ko": "메리 셸리",
+      "author_death": 1851,
+      "published": 1818,
+      "source_url": "https://www.gutenberg.org/ebooks/84",
+      "source": { "type": "gutenberg", "ebook_id": 84 },
+      "translation_by": "Claude (빌드 시점 번역, 저장소에서 수정 가능)"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+name: 테스트
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: 테스트
+        run: python -m pytest tests -q
+
+      - name: 커밋된 코퍼스가 최신인지 확인
+        run: python scripts/build_corpus.py --check
+
+      - name: 발송 미리보기 (실제 전송 없음)
+        env:
+          DRY_RUN: "1"
+          START_DATE: "2026-01-01"
+        run: python -m src.main

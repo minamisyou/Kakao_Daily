@@ -1,0 +1,37 @@
+{
+  "work_id": "austen_pride_prejudice",
+  "verified": false,
+  "_note": "verified=false는 '아직 원문 대조를 안 했다'는 뜻이다. scripts/verify_passages.py를 돌리면 Project Gutenberg 전문과 글자 단위로 대조해 true로 바꿔준다.",
+  "passages": [
+    {
+      "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+      "text_ko": "재산깨나 있는 독신 남자에게는 반드시 아내가 필요하다는 것, 이것은 누구나 인정하는 진리다.",
+      "note": "소설의 첫 문장. 보편적 진리인 척 시치미를 떼지만, 정작 그 '진리'를 믿는 건 사윗감을 노리는 동네 어머니들뿐이다."
+    },
+    {
+      "text": "\"My dear Mr. Bennet,\" said his lady to him one day, \"have you heard that Netherfield Park is let at last?\"",
+      "text_ko": "\"여보, 네더필드 저택이 드디어 세가 나갔다는 소식 들으셨어요?\" 어느 날 베넷 부인이 남편에게 말했다.",
+      "note": "부인의 관심사는 저택이 아니라 거기 들어올 독신 남자다. 딸 다섯을 시집보내야 하는 어머니가 두는 첫 수."
+    },
+    {
+      "text": "\"Do not you want to know who has taken it?\" cried his wife impatiently.",
+      "text_ko": "\"누가 들어왔는지 궁금하지도 않으세요?\" 부인이 답답하다는 듯 소리쳤다.",
+      "note": "베넷 씨는 관심 없는 척하며 아내를 약 올린다. 이 부부의 대화는 늘 이런 밀고 당기기다."
+    },
+    {
+      "text": "\"She is tolerable; but not handsome enough to tempt me; and I am in no humour at present to give consequence to young ladies.\"",
+      "text_ko": "\"봐줄 만은 하지. 하지만 내 마음이 동할 만큼 예쁘진 않아. 지금 나는 아가씨들을 치켜세워 줄 기분이 아니야.\"",
+      "note": "첫 무도회에서 다아시가 엘리자베스를 두고 한 말. 그녀는 이 말을 그대로 듣는다. '오만'과 '편견'이 동시에 태어나는 순간."
+    },
+    {
+      "text": "In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.",
+      "text_ko": "애써 봤지만 소용없었습니다. 이 감정은 억눌러지지 않습니다. 제가 당신을 얼마나 뜨겁게 흠모하고 사랑하는지 말하게 해 주십시오.",
+      "note": "다아시의 첫 고백. 사랑을 고백하면서도 신분 차이를 굳이 덧붙여, 결국 보기 좋게 거절당한다."
+    },
+    {
+      "text": "You are too generous to trifle with me. If your feelings are still what they were last April, tell me so at once.",
+      "text_ko": "당신은 저를 가지고 장난칠 분이 아니지요. 지난 4월과 같은 마음이시라면, 지금 바로 그렇다고 말해 주십시오.",
+      "note": "두 번째 고백. 이번엔 조건도 변명도 없다. 오만을 버린 자리에 남은 건 이 짧은 문장뿐이다."
+    }
+  ]
+}

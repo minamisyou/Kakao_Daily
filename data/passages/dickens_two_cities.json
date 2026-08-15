@@ -1,0 +1,36 @@
+{
+  "work_id": "dickens_two_cities",
+  "verified": false,
+  "passages": [
+    {
+      "text": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness,",
+      "text_ko": "최고의 시절이자 최악의 시절이었고, 지혜의 시대이자 어리석음의 시대였다.",
+      "note": "프랑스 혁명 직전을 여는 문장. 반대되는 말을 나란히 놓아, 어느 한쪽으로도 정리되지 않는 시대를 그대로 보여준다."
+    },
+    {
+      "text": "it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness,",
+      "text_ko": "믿음의 시기이자 불신의 시기였고, 빛의 계절이자 어둠의 계절이었다.",
+      "note": "같은 구조가 계속 반복된다. 읽다 보면 판단이 유예되고, 독자는 어느 편도 들 수 없게 된다."
+    },
+    {
+      "text": "it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us,",
+      "text_ko": "희망의 봄이자 절망의 겨울이었고, 우리 앞에는 모든 것이 있었으며 또한 아무것도 없었다.",
+      "note": "혁명을 맞는 사람들의 심정. 같은 사건이 누구에게는 봄이고 누구에게는 겨울이었다."
+    },
+    {
+      "text": "A wonderful fact to reflect upon, that every human creature is constituted to be that profound secret and mystery to every other.",
+      "text_ko": "생각할수록 놀라운 사실이 있다. 인간은 누구나 서로에게 깊은 비밀이자 수수께끼로 만들어져 있다는 것.",
+      "note": "군중과 혁명을 그리다가 갑자기 한 사람 안으로 들어간다. 이 소설이 결국 무엇을 이야기할지 미리 알려주는 대목."
+    },
+    {
+      "text": "For you, and for any dear to you, I would do anything.",
+      "text_ko": "당신을 위해서라면, 그리고 당신이 아끼는 사람을 위해서라면, 저는 무엇이든 하겠습니다.",
+      "note": "시드니 카턴이 루시에게. 이룰 수 없는 사랑을 고백하는 대신 남긴 약속이고, 그는 끝내 이 말을 지킨다."
+    },
+    {
+      "text": "It is a far, far better thing that I do, than I have ever done; it is a far, far better rest that I go to than I have ever known.",
+      "text_ko": "지금 내가 하는 일은 지금까지 해 온 그 어떤 일보다 훨씬, 훨씬 나은 일이다. 지금 내가 가는 안식은 여태 알던 그 어떤 안식보다 훨씬, 훨씬 나은 것이다.",
+      "note": "소설의 마지막 문장. 남을 대신해 단두대에 오르는 카턴의 마음. 앞의 약속이 여기서 회수된다."
+    }
+  ]
+}

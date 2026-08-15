@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# 카카오 토큰. 절대 커밋하지 않는다.
+.env
+.refresh_token
+
+# 수집한 원문은 캐시로 취급한다.
+# 필요할 때 scripts/fetch_sources.py로 다시 받으면 된다.
+data/sources/*.txt

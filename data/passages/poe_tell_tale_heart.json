@@ -1,0 +1,36 @@
+{
+  "work_id": "poe_tell_tale_heart",
+  "verified": false,
+  "passages": [
+    {
+      "text": "True!—nervous—very, very dreadfully nervous I had been and am; but why will you say that I am mad?",
+      "text_ko": "그래! 나는 신경이 곤두서 있었다. 지독하게, 아주 지독하게. 지금도 그렇다. 하지만 어째서 나를 미쳤다고들 하는가?",
+      "note": "화자가 첫 문장부터 자기가 미치지 않았다고 항변한다. 아무도 묻지 않았는데 먼저 부인하는 순간, 독자는 이미 그를 믿지 않는다."
+    },
+    {
+      "text": "The disease had sharpened my senses—not destroyed—not dulled them. Above all was the sense of hearing acute.",
+      "text_ko": "병은 내 감각을 무디게 한 게 아니라 오히려 날카롭게 벼려 놓았다. 그중에서도 청각이 가장 예민했다.",
+      "note": "그가 자랑하는 이 예민한 청각이 결국 그를 무너뜨린다. 제목의 '심장 소리'는 여기서 예고된다."
+    },
+    {
+      "text": "He had the eye of a vulture—a pale blue eye, with a film over it.",
+      "text_ko": "노인은 독수리의 눈을 가지고 있었다. 옅은 푸른색에 얇은 막이 씌워진 눈.",
+      "note": "살인의 동기가 재물도 원한도 아닌 '눈' 하나다. 이유가 사소할수록 광기는 더 또렷해진다."
+    },
+    {
+      "text": "It is impossible to say how first the idea entered my brain; but once conceived, it haunted me day and night.",
+      "text_ko": "그 생각이 어떻게 처음 머릿속에 들어왔는지는 말할 수 없다. 다만 한번 떠오르자 밤낮으로 나를 놓아주지 않았다.",
+      "note": "결심한 적이 없는데 결심이 그를 붙잡는다. 스스로를 사건의 주인이 아니라 피해자처럼 말하는 화법."
+    },
+    {
+      "text": "And now have I not told you that what you mistake for madness is but over-acuteness of the senses?",
+      "text_ko": "자, 내가 말하지 않았는가. 당신들이 광기라고 오해하는 것은 그저 지나치게 예민한 감각일 뿐이라고.",
+      "note": "이야기 내내 독자를 붙들고 변론한다. 설득하려 애쓸수록 그 반대가 증명된다."
+    },
+    {
+      "text": "\"Villains!\" I shrieked, \"dissemble no more! I admit the deed!—tear up the planks!—here, here!—it is the beating of his hideous heart!\"",
+      "text_ko": "\"이 악당들!\" 나는 비명을 질렀다. \"더는 시치미 떼지 마! 내가 했다! 마룻바닥을 뜯어라! 여기, 여기다! 저 끔찍한 심장이 뛰는 소리다!\"",
+      "note": "마지막 장면. 그를 잡은 건 경찰이 아니라 자기 귀였다. 완전범죄는 바깥이 아니라 안에서 무너진다."
+    }
+  ]
+}

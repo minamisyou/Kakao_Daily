@@ -1,0 +1,59 @@
+name: 코퍼스 수집·빌드
+
+# 위키문헌과 Project Gutenberg에서 전문을 받아 코퍼스를 다시 만든다.
+# 로컬에 파이썬 환경이 없어도 이 워크플로만 돌리면 된다.
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "결과를 커밋한다"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: 원문 수집
+        run: python scripts/fetch_sources.py
+
+      - name: 큐레이션 구절을 원문과 대조
+        # 대조에 실패해도 빌드는 계속한다. 어떤 구절이 원문과 다른지
+        # 로그로 확인하고 고칠 수 있도록 결과만 남긴다.
+        continue-on-error: true
+        run: python scripts/verify_passages.py --write
+
+      - name: 코퍼스 빌드
+        run: python scripts/build_corpus.py
+
+      - name: 테스트
+        run: |
+          pip install -r requirements-dev.txt
+          python -m pytest tests -q
+
+      - name: 커밋
+        if: inputs.commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/segments.json data/passages
+          if git diff --staged --quiet; then
+            echo "바뀐 내용이 없습니다."
+            exit 0
+          fi
+          git commit -m "chore: 원문 수집 결과로 코퍼스 재빌드"
+          git push

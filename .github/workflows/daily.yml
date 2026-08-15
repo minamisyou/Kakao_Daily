@@ -1,0 +1,65 @@
+name: 매일 발송
+
+on:
+  schedule:
+    # UTC 23:00 = KST 08:00. GitHub 크론은 UTC 기준이고, 부하에 따라
+    # 수 분에서 수십 분 늦게 뜰 수 있다.
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "실제로 보내지 않고 미리보기만 출력"
+        type: boolean
+        default: false
+
+concurrency:
+  # 예약 실행과 수동 실행이 겹쳐 같은 날 두 번 보내지 않도록 막는다.
+  group: kakao-daily-send
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: 오늘 분량 발송
+        env:
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
+          START_DATE: ${{ vars.START_DATE || '2026-01-01' }}
+          TRACK_PATTERN: ${{ vars.TRACK_PATTERN || 'kr,en' }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+          REFRESH_TOKEN_OUT: ${{ github.workspace }}/.refresh_token
+        run: python -m src.main
+
+      - name: 갱신된 refresh token을 Secret에 반영
+        # 발송이 실패했더라도 토큰이 새로 나왔다면 반드시 저장해야 한다.
+        # 여기서 놓치면 다음 실행부터 인증이 통째로 막힌다.
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ ! -s .refresh_token ]; then
+            echo "카카오가 새 refresh token을 주지 않았습니다. 교체할 것 없음."
+            exit 0
+          fi
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::새 refresh token이 발급됐지만 GH_PAT가 없어 저장하지 못했습니다."
+            echo "::error::scripts/get_token.py를 다시 돌려 KAKAO_REFRESH_TOKEN을 직접 갱신하세요."
+            exit 1
+          fi
+
+          gh secret set KAKAO_REFRESH_TOKEN --body "$(cat .refresh_token)"
+          rm -f .refresh_token
+          echo "KAKAO_REFRESH_TOKEN을 새 값으로 교체했습니다."
