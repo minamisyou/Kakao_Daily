@@ -1,4 +1,7 @@
-"""진입점: 오늘 분량을 골라 카카오톡 '나에게 보내기'로 발송한다."""
+"""진입점: 오늘 분량을 골라 카카오톡으로 발송한다.
+
+KAKAO_RECEIVER_UUIDS가 비어 있으면 '나와의 채팅'으로, 있으면 그 친구들에게 보낸다.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +14,7 @@ from .corpus import CorpusError, load_corpus, select_for_day
 from .kakao import (
     KakaoError,
     refresh_access_token,
-    send_text_memo,
+    send_text,
     troubleshooting_hint,
 )
 from .message import OutgoingMessage, build_messages
@@ -92,11 +95,12 @@ def run() -> int:
     for i, message in enumerate(messages, start=1):
         if i > 1:
             time.sleep(SEND_INTERVAL_SECONDS)
-        send_text_memo(
+        send_text(
             tokens.access_token,
             message.text,
             message.link_url,
             message.button_title,
+            receiver_uuids=list(config.receiver_uuids) or None,
         )
         logger.info("전송 완료 %d/%d (%d자)", i, len(messages), len(message.text))
 

@@ -10,10 +10,21 @@
 출력된 refresh token을 GitHub Secret KAKAO_REFRESH_TOKEN에 넣으면 끝이다.
 이 값은 2개월 만료지만, 매일 발송이 돌면서 만료 전에 자동으로 새 값으로
 교체되므로 다시 이 스크립트를 돌릴 일은 없다.
+
+'나와의 채팅' 대신 친구(팀 멤버로 등록한 테스트 계정 등)에게 보내려면,
+그 친구의 uuid가 필요하다. --scope로 friends 동의항목을 함께 받으면
+로그인 직후 이 앱에 연결된 친구 목록과 uuid를 바로 보여준다:
+
+  python scripts/get_token.py --scope talk_message,friends
+
+이때는 로그인한 계정(발신자) 기준으로 친구 목록이 나온다 — 카카오톡에서
+실제로 서로 친구여야 하고, 상대방도 이 앱의 팀 멤버로 등록돼 있어야 목록에
+잡힌다. 나온 uuid를 KAKAO_RECEIVER_UUIDS에 넣으면 된다.
 """
 
 from __future__ import annotations
 
+import argparse
 import http.server
 import os
 import socket
@@ -28,8 +39,11 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from src.kakao import (  # noqa: E402
     KakaoError,
+    SCOPE_FRIENDS,
+    SCOPE_TALK_MESSAGE,
     build_authorize_url,
     exchange_authorization_code,
+    get_friends,
     troubleshooting_hint,
 )
 
@@ -87,6 +101,18 @@ def _port_is_free(port: int) -> bool:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="카카오 refresh token 발급")
+    parser.add_argument(
+        "--scope",
+        default=SCOPE_TALK_MESSAGE,
+        help=(
+            "쉼표로 구분된 동의항목 목록 (기본: talk_message). "
+            f"친구 uuid를 조회하려면 '{SCOPE_TALK_MESSAGE},{SCOPE_FRIENDS}'."
+        ),
+    )
+    args = parser.parse_args()
+    requested_friends = SCOPE_FRIENDS in args.scope.split(",")
+
     rest_api_key = os.environ.get("KAKAO_REST_API_KEY", "").strip()
     if not rest_api_key:
         print(
@@ -111,10 +137,11 @@ def main() -> int:
         )
         return 2
 
-    authorize_url = build_authorize_url(rest_api_key, redirect_uri)
+    authorize_url = build_authorize_url(rest_api_key, redirect_uri, scope=args.scope)
 
     print("카카오 개발자 콘솔의 Redirect URI에 다음 주소가 등록돼 있어야 합니다:")
     print(f"  {redirect_uri}\n")
+    print(f"요청할 동의항목: {args.scope}\n")
     print(
         "Client Secret: "
         + (
@@ -173,6 +200,34 @@ def main() -> int:
         print(f"KAKAO_CLIENT_SECRET = {client_secret}")
     print("=" * 60)
     print("\n이 값은 비밀번호와 같습니다. 저장소나 채팅에 붙여넣지 마세요.")
+
+    if requested_friends:
+        print("\n" + "=" * 60)
+        print("이 앱에 연결된 카카오톡 친구 목록")
+        print("=" * 60)
+        try:
+            friends = get_friends(tokens.access_token)
+        except KakaoError as exc:
+            print(f"친구 목록 조회 실패: {exc}", file=sys.stderr)
+            hint = troubleshooting_hint(exc)
+            if hint:
+                print(f"\n{hint}", file=sys.stderr)
+            return 1
+
+        if not friends:
+            print(
+                "친구가 없습니다. 다음을 확인하세요:\n"
+                "  - 상대방이 카카오 개발자 콘솔 > 앱 설정 > 팀 관리에 멤버로 등록돼 있는지\n"
+                "  - 방금 로그인한 계정과 실제 카카오톡에서 서로 친구인지"
+            )
+        else:
+            for friend in friends:
+                nickname = friend.get("profile_nickname", "(닉네임 비공개)")
+                print(f"  {friend['uuid']}  —  {nickname}")
+            print(
+                "\n보낼 대상의 uuid를 KAKAO_RECEIVER_UUIDS Secret에 넣으세요 "
+                "(여러 명이면 쉼표로 구분)."
+            )
     return 0
 
 

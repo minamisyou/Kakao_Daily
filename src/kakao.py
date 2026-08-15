@@ -13,9 +13,18 @@ KAPI_BASE = "https://kapi.kakao.com"
 TOKEN_URL = f"{KAUTH_BASE}/oauth/token"
 AUTHORIZE_URL = f"{KAUTH_BASE}/oauth/authorize"
 MEMO_SEND_URL = f"{KAPI_BASE}/v2/api/talk/memo/default/send"
+FRIEND_SEND_URL = f"{KAPI_BASE}/v1/api/talk/friends/message/default/send"
+FRIENDS_LIST_URL = f"{KAPI_BASE}/v1/api/talk/friends"
 
 #: 나에게 보내기에 필요한 유일한 동의항목.
 SCOPE_TALK_MESSAGE = "talk_message"
+#: 친구 목록을 읽어와 UUID를 확인할 때만 필요하다. 친구에게 실제로
+#: 보내는 API 자체는 talk_message 스코프만 있으면 된다.
+SCOPE_FRIENDS = "friends"
+
+#: 비즈니스 앱 전환(심사) 전에는 앱의 팀 멤버로 등록된 카카오 계정끼리만
+#: 친구 메시지를 주고받을 수 있다. 개인 프로젝트에서 테스트 계정을 만들어
+#: 팀 멤버로 등록하는 방식이 여기 해당한다.
 
 TIMEOUT_SECONDS = 20
 
@@ -140,23 +149,51 @@ def build_text_template(
     return template
 
 
-def send_text_memo(
+def send_text(
     access_token: str,
     text: str,
     link_url: str,
     button_title: str | None = None,
+    receiver_uuids: list[str] | None = None,
     session: requests.Session | None = None,
 ) -> dict:
-    """카카오톡 '나와의 채팅'으로 텍스트 메시지를 보낸다."""
+    """카카오톡으로 텍스트 메시지를 보낸다.
+
+    `receiver_uuids`가 없으면 '나와의 채팅'으로, 있으면 그 친구들에게 보낸다.
+    """
     http = session or requests
     template = build_text_template(text, link_url, button_title)
+    data = {"template_object": json.dumps(template, ensure_ascii=False)}
+
+    if receiver_uuids:
+        url = FRIEND_SEND_URL
+        data["receiver_uuids"] = json.dumps(receiver_uuids, ensure_ascii=False)
+    else:
+        url = MEMO_SEND_URL
+
     response = http.post(
-        MEMO_SEND_URL,
+        url,
         headers={"Authorization": f"Bearer {access_token}"},
-        data={"template_object": json.dumps(template, ensure_ascii=False)},
+        data=data,
         timeout=TIMEOUT_SECONDS,
     )
     return _raise_for_kakao_error(response, "메시지 전송")
+
+
+def get_friends(access_token: str, session: requests.Session | None = None) -> list[dict]:
+    """이 앱에 연결된 카카오톡 친구 목록을 가져온다.
+
+    `friends` 동의항목이 있는 토큰이어야 한다. 각 항목에 `uuid`, `profile_nickname`
+    등이 들어 있다 — 그 uuid를 send_text의 receiver_uuids에 넣으면 된다.
+    """
+    http = session or requests
+    response = http.get(
+        FRIENDS_LIST_URL,
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=TIMEOUT_SECONDS,
+    )
+    payload = _raise_for_kakao_error(response, "친구 목록 조회")
+    return payload.get("elements", [])
 
 
 #: 카카오 오류 코드는 원인을 거의 알려주지 않아서, 실제로 자주 걸리는
@@ -188,6 +225,13 @@ _HINTS: tuple[tuple[tuple[str, ...], str], ...] = (
         "사용 설정한 뒤, 토큰을 다시 발급받아야 합니다. 동의항목을 바꿔도\n"
         "이미 발급된 토큰에는 반영되지 않습니다.",
     ),
+    (
+        ("-401", "KOE005"),
+        "친구에게 보내기는 앱이 비즈니스 전환(심사)되기 전까지 앱의\n"
+        "'팀 멤버'로 등록된 카카오 계정끼리만 됩니다. 콘솔 > 앱 설정 >\n"
+        "팀 관리에서 발신 계정과 수신 계정이 모두 멤버로 등록돼 있는지,\n"
+        "두 계정이 실제 카카오톡에서 서로 친구로 추가돼 있는지 확인하세요.",
+    ),
 )
 
 
@@ -200,8 +244,14 @@ def troubleshooting_hint(error: Exception) -> str:
     return ""
 
 
-def build_authorize_url(rest_api_key: str, redirect_uri: str) -> str:
-    """브라우저로 열 인가 URL (scripts/get_token.py에서 사용)."""
+def build_authorize_url(
+    rest_api_key: str, redirect_uri: str, scope: str = SCOPE_TALK_MESSAGE
+) -> str:
+    """브라우저로 열 인가 URL (scripts/get_token.py에서 사용).
+
+    여러 동의항목을 한 번에 받으려면 쉼표로 이어서 넘긴다
+    (예: f"{SCOPE_TALK_MESSAGE},{SCOPE_FRIENDS}").
+    """
     from urllib.parse import urlencode
 
     query = urlencode(
@@ -209,7 +259,7 @@ def build_authorize_url(rest_api_key: str, redirect_uri: str) -> str:
             "client_id": rest_api_key,
             "redirect_uri": redirect_uri,
             "response_type": "code",
-            "scope": SCOPE_TALK_MESSAGE,
+            "scope": scope,
         }
     )
     return f"{AUTHORIZE_URL}?{query}"

@@ -40,6 +40,11 @@ def _required(name: str, dry_run: bool) -> str:
     )
 
 
+def parse_receiver_uuids(raw: str) -> tuple[str, ...]:
+    """쉼표로 구분된 친구 UUID 목록. 비어 있으면 '나와의 채팅'으로 보낸다."""
+    return tuple(part.strip() for part in raw.split(",") if part.strip())
+
+
 def parse_track_pattern(raw: str) -> tuple[str, ...]:
     """'kr,en' 또는 'kr,kr,en' 형태의 편성 패턴을 파싱한다.
 
@@ -78,6 +83,9 @@ class Config:
     #: 카카오 콘솔에서 Client Secret을 '사용함'으로 켠 앱만 필요하다.
     #: 꺼져 있으면 빈 문자열이어야 하고, 넣으면 오히려 거절당한다.
     client_secret: str
+    #: 비어 있으면 '나와의 채팅'으로, 값이 있으면 그 친구들에게 보낸다.
+    #: 비즈니스 전환 전에는 앱의 팀 멤버로 등록된 계정끼리만 가능하다.
+    receiver_uuids: tuple[str, ...]
     start_date: date
     track_pattern: tuple[str, ...]
     segments_path: Path
@@ -93,6 +101,7 @@ class Config:
             rest_api_key=_required("KAKAO_REST_API_KEY", dry_run),
             refresh_token=_required("KAKAO_REFRESH_TOKEN", dry_run),
             client_secret=os.environ.get("KAKAO_CLIENT_SECRET", "").strip(),
+            receiver_uuids=parse_receiver_uuids(os.environ.get("KAKAO_RECEIVER_UUIDS", "")),
             start_date=parse_date(
                 os.environ.get("START_DATE", "2026-01-01"), "START_DATE"
             ),

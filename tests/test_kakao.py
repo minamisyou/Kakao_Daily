@@ -5,14 +5,17 @@ import json
 import pytest
 
 from src.kakao import (
+    FRIEND_SEND_URL,
+    FRIENDS_LIST_URL,
     MEMO_SEND_URL,
     TOKEN_URL,
     KakaoError,
     build_authorize_url,
     build_text_template,
     exchange_authorization_code,
+    get_friends,
     refresh_access_token,
-    send_text_memo,
+    send_text,
     troubleshooting_hint,
 )
 
@@ -39,6 +42,11 @@ class FakeSession:
     def post(self, url, data=None, headers=None, timeout=None):
         self.url = url
         self.data = data
+        self.headers = headers
+        return self.response
+
+    def get(self, url, headers=None, timeout=None):
+        self.url = url
         self.headers = headers
         return self.response
 
@@ -166,6 +174,10 @@ class TestTroubleshootingHint:
     def test_missing_scope_points_at_the_consent_setting(self):
         assert "동의항목" in troubleshooting_hint(KakaoError("insufficient scopes."))
 
+    def test_friend_send_without_team_membership_points_at_team_management(self):
+        hint = troubleshooting_hint(KakaoError("... (code=-401): ..."))
+        assert "팀 멤버" in hint
+
     def test_unrecognised_error_gets_no_hint(self):
         assert troubleshooting_hint(KakaoError("서버가 응답하지 않습니다")) == ""
 
@@ -189,16 +201,17 @@ class TestTextTemplate:
         assert template["button_title"] == "원문 읽기"
 
 
-class TestSendTextMemo:
-    def test_posts_to_the_memo_endpoint_with_bearer_token(self):
+class TestSendText:
+    def test_posts_to_the_memo_endpoint_by_default(self):
         session = FakeSession(FakeResponse({"result_code": 0}))
-        send_text_memo("AT", "본문", "https://example.test", session=session)
+        send_text("AT", "본문", "https://example.test", session=session)
         assert session.url == MEMO_SEND_URL
         assert session.headers == {"Authorization": "Bearer AT"}
+        assert "receiver_uuids" not in session.data
 
     def test_template_is_sent_as_json_without_escaping_hangul(self):
         session = FakeSession(FakeResponse({"result_code": 0}))
-        send_text_memo("AT", "봄·봄", "https://example.test", session=session)
+        send_text("AT", "봄·봄", "https://example.test", session=session)
         assert "봄·봄" in session.data["template_object"]
         assert json.loads(session.data["template_object"])["text"] == "봄·봄"
 
@@ -209,11 +222,63 @@ class TestSendTextMemo:
             )
         )
         with pytest.raises(KakaoError, match="insufficient scopes"):
-            send_text_memo("AT", "본문", "https://example.test", session=session)
+            send_text("AT", "본문", "https://example.test", session=session)
+
+    def test_posts_to_the_friend_endpoint_when_receiver_uuids_given(self):
+        session = FakeSession(FakeResponse({"result_code": 0}))
+        send_text(
+            "AT", "본문", "https://example.test", receiver_uuids=["uuid-1"], session=session
+        )
+        assert session.url == FRIEND_SEND_URL
+
+    def test_friend_endpoint_sends_receiver_uuids_as_json(self):
+        session = FakeSession(FakeResponse({"result_code": 0}))
+        send_text(
+            "AT", "본문", "https://example.test",
+            receiver_uuids=["uuid-1", "uuid-2"], session=session,
+        )
+        assert json.loads(session.data["receiver_uuids"]) == ["uuid-1", "uuid-2"]
+
+    def test_empty_receiver_uuids_falls_back_to_memo(self):
+        session = FakeSession(FakeResponse({"result_code": 0}))
+        send_text("AT", "본문", "https://example.test", receiver_uuids=[], session=session)
+        assert session.url == MEMO_SEND_URL
+
+
+class TestGetFriends:
+    def test_returns_the_elements_list(self):
+        session = FakeSession(
+            FakeResponse({"elements": [{"uuid": "u1", "profile_nickname": "테스터"}]})
+        )
+        friends = get_friends("AT", session=session)
+        assert friends == [{"uuid": "u1", "profile_nickname": "테스터"}]
+
+    def test_requests_the_friends_list_endpoint_with_bearer_token(self):
+        session = FakeSession(FakeResponse({"elements": []}))
+        get_friends("AT", session=session)
+        assert session.url == FRIENDS_LIST_URL
+        assert session.headers == {"Authorization": "Bearer AT"}
+
+    def test_missing_friends_scope_raises(self):
+        session = FakeSession(
+            FakeResponse({"code": -402, "msg": "insufficient scopes."}, status_code=403)
+        )
+        with pytest.raises(KakaoError, match="insufficient scopes"):
+            get_friends("AT", session=session)
+
+    def test_no_friends_returns_empty_list(self):
+        session = FakeSession(FakeResponse({"elements": []}))
+        assert get_friends("AT", session=session) == []
 
 
 class TestAuthorizeUrl:
-    def test_requests_only_the_talk_message_scope(self):
+    def test_requests_only_the_talk_message_scope_by_default(self):
         url = build_authorize_url("KEY", "http://localhost:8080/callback")
         assert "scope=talk_message" in url
         assert "response_type=code" in url
+
+    def test_can_request_additional_scopes(self):
+        url = build_authorize_url(
+            "KEY", "http://localhost:8080/callback", scope="talk_message,friends"
+        )
+        assert "friends" in url
