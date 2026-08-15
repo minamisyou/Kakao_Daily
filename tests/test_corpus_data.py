@@ -11,7 +11,7 @@ import pytest
 
 from src.config import KAKAO_TEXT_LIMIT, DEFAULT_SEGMENTS_PATH
 from src.corpus import Selection, load_corpus
-from src.message import build_messages
+from src.message import MAX_BUBBLES_PER_DAY, build_messages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WORKS_PATH = REPO_ROOT / "data" / "works.json"
@@ -35,10 +35,19 @@ def test_both_tracks_have_segments():
 
 
 @pytest.mark.parametrize("track,segment", ALL_SEGMENTS, ids=lambda v: getattr(v, "work_id", v))
-def test_every_segment_fits_in_a_kakao_bubble(track, segment):
+def test_every_bubble_in_a_days_send_fits_the_kakao_limit(track, segment):
     work = CORPUS.work_for(segment)
     for message in build_messages(Selection(track, work, segment, 0)):
         assert len(message.text) <= KAKAO_TEXT_LIMIT
+
+
+@pytest.mark.parametrize("track,segment", ALL_SEGMENTS, ids=lambda v: getattr(v, "work_id", v))
+def test_a_days_send_does_not_spam_too_many_bubbles(track, segment):
+    work = CORPUS.work_for(segment)
+    messages = build_messages(Selection(track, work, segment, 0))
+    assert len(messages) <= MAX_BUBBLES_PER_DAY, (
+        f"{segment.work_id} #{segment.seq}가 하루에 {len(messages)}통을 보낸다."
+    )
 
 
 @pytest.mark.parametrize("segment", CORPUS.tracks["en"], ids=lambda s: f"{s.work_id}#{s.seq}")

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T01:07:36+00:00",
+  "generated_at": "2026-08-15T06:12:48+00:00",
   "kakao_text_limit": 200,
   "works": {
     "kim_yujeong_bombom": {
@@ -23,33 +23,12 @@
       "title_original": "",
       "source_url": "https://ko.wikisource.org/wiki/날개"
     },
-    "austen_pride_prejudice": {
-      "track": "en",
-      "title": "오만과 편견",
-      "author": "제인 오스틴",
-      "title_original": "Pride and Prejudice",
-      "source_url": "https://www.gutenberg.org/ebooks/1342"
-    },
-    "dickens_two_cities": {
-      "track": "en",
-      "title": "두 도시 이야기",
-      "author": "찰스 디킨스",
-      "title_original": "A Tale of Two Cities",
-      "source_url": "https://www.gutenberg.org/ebooks/98"
-    },
     "poe_tell_tale_heart": {
       "track": "en",
       "title": "고자질하는 심장",
       "author": "에드거 앨런 포",
       "title_original": "The Tell-Tale Heart",
       "source_url": "https://www.gutenberg.org/ebooks/2148"
-    },
-    "shelley_frankenstein": {
-      "track": "en",
-      "title": "프랑켄슈타인",
-      "author": "메리 셸리",
-      "title_original": "Frankenstein",
-      "source_url": "https://www.gutenberg.org/ebooks/84"
     }
   },
   "tracks": {
@@ -105,102 +84,6 @@
     ],
     "en": [
       {
-        "work_id": "austen_pride_prejudice",
-        "seq": 1,
-        "total": 6,
-        "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-        "text_ko": "재산깨나 있는 독신 남자에게는 반드시 아내가 필요하다는 것, 이것은 누구나 인정하는 진리다.",
-        "note": "소설의 첫 문장. 보편적 진리인 척 시치미를 떼지만, 정작 그 '진리'를 믿는 건 사윗감을 노리는 동네 어머니들뿐이다."
-      },
-      {
-        "work_id": "austen_pride_prejudice",
-        "seq": 2,
-        "total": 6,
-        "text": "\"My dear Mr. Bennet,\" said his lady to him one day, \"have you heard that Netherfield Park is let at last?\"",
-        "text_ko": "\"여보, 네더필드 저택이 드디어 세가 나갔다는 소식 들으셨어요?\" 어느 날 베넷 부인이 남편에게 말했다.",
-        "note": "부인의 관심사는 저택이 아니라 거기 들어올 독신 남자다. 딸 다섯을 시집보내야 하는 어머니가 두는 첫 수."
-      },
-      {
-        "work_id": "austen_pride_prejudice",
-        "seq": 3,
-        "total": 6,
-        "text": "\"Do not you want to know who has taken it?\" cried his wife impatiently.",
-        "text_ko": "\"누가 들어왔는지 궁금하지도 않으세요?\" 부인이 답답하다는 듯 소리쳤다.",
-        "note": "베넷 씨는 관심 없는 척하며 아내를 약 올린다. 이 부부의 대화는 늘 이런 밀고 당기기다."
-      },
-      {
-        "work_id": "austen_pride_prejudice",
-        "seq": 4,
-        "total": 6,
-        "text": "\"She is tolerable; but not handsome enough to tempt me; and I am in no humour at present to give consequence to young ladies.\"",
-        "text_ko": "\"봐줄 만은 하지. 하지만 내 마음이 동할 만큼 예쁘진 않아. 지금 나는 아가씨들을 치켜세워 줄 기분이 아니야.\"",
-        "note": "첫 무도회에서 다아시가 엘리자베스를 두고 한 말. 그녀는 이 말을 그대로 듣는다. '오만'과 '편견'이 동시에 태어나는 순간."
-      },
-      {
-        "work_id": "austen_pride_prejudice",
-        "seq": 5,
-        "total": 6,
-        "text": "In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.",
-        "text_ko": "애써 봤지만 소용없었습니다. 이 감정은 억눌러지지 않습니다. 제가 당신을 얼마나 뜨겁게 흠모하고 사랑하는지 말하게 해 주십시오.",
-        "note": "다아시의 첫 고백. 사랑을 고백하면서도 신분 차이를 굳이 덧붙여, 결국 보기 좋게 거절당한다."
-      },
-      {
-        "work_id": "austen_pride_prejudice",
-        "seq": 6,
-        "total": 6,
-        "text": "You are too generous to trifle with me. If your feelings are still what they were last April, tell me so at once.",
-        "text_ko": "당신은 저를 가지고 장난칠 분이 아니지요. 지난 4월과 같은 마음이시라면, 지금 바로 그렇다고 말해 주십시오.",
-        "note": "두 번째 고백. 이번엔 조건도 변명도 없다. 오만을 버린 자리에 남은 건 이 짧은 문장뿐이다."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 1,
-        "total": 6,
-        "text": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness,",
-        "text_ko": "최고의 시절이자 최악의 시절이었고, 지혜의 시대이자 어리석음의 시대였다.",
-        "note": "프랑스 혁명 직전을 여는 문장. 반대되는 말을 나란히 놓아, 어느 한쪽으로도 정리되지 않는 시대를 그대로 보여준다."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 2,
-        "total": 6,
-        "text": "it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness,",
-        "text_ko": "믿음의 시기이자 불신의 시기였고, 빛의 계절이자 어둠의 계절이었다.",
-        "note": "같은 구조가 계속 반복된다. 읽다 보면 판단이 유예되고, 독자는 어느 편도 들 수 없게 된다."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 3,
-        "total": 6,
-        "text": "it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us,",
-        "text_ko": "희망의 봄이자 절망의 겨울이었고, 우리 앞에는 모든 것이 있었으며 또한 아무것도 없었다.",
-        "note": "혁명을 맞는 사람들의 심정. 같은 사건이 누구에게는 봄이고 누구에게는 겨울이었다."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 4,
-        "total": 6,
-        "text": "A wonderful fact to reflect upon, that every human creature is constituted to be that profound secret and mystery to every other.",
-        "text_ko": "생각할수록 놀라운 사실이 있다. 인간은 누구나 서로에게 깊은 비밀이자 수수께끼로 만들어져 있다는 것.",
-        "note": "군중과 혁명을 그리다가 갑자기 한 사람 안으로 들어간다. 이 소설이 결국 무엇을 이야기할지 미리 알려주는 대목."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 5,
-        "total": 6,
-        "text": "For you, and for any dear to you, I would do anything.",
-        "text_ko": "당신을 위해서라면, 그리고 당신이 아끼는 사람을 위해서라면, 저는 무엇이든 하겠습니다.",
-        "note": "시드니 카턴이 루시에게. 이룰 수 없는 사랑을 고백하는 대신 남긴 약속이고, 그는 끝내 이 말을 지킨다."
-      },
-      {
-        "work_id": "dickens_two_cities",
-        "seq": 6,
-        "total": 6,
-        "text": "It is a far, far better thing that I do, than I have ever done; it is a far, far better rest that I go to than I have ever known.",
-        "text_ko": "지금 내가 하는 일은 지금까지 해 온 그 어떤 일보다 훨씬, 훨씬 나은 일이다. 지금 내가 가는 안식은 여태 알던 그 어떤 안식보다 훨씬, 훨씬 나은 것이다.",
-        "note": "소설의 마지막 문장. 남을 대신해 단두대에 오르는 카턴의 마음. 앞의 약속이 여기서 회수된다."
-      },
-      {
         "work_id": "poe_tell_tale_heart",
         "seq": 1,
         "total": 6,
@@ -247,54 +130,6 @@
         "text": "\"Villains!\" I shrieked, \"dissemble no more! I admit the deed!—tear up the planks!—here, here!—it is the beating of his hideous heart!\"",
         "text_ko": "\"이 악당들!\" 나는 비명을 질렀다. \"더는 시치미 떼지 마! 내가 했다! 마룻바닥을 뜯어라! 여기, 여기다! 저 끔찍한 심장이 뛰는 소리다!\"",
         "note": "마지막 장면. 그를 잡은 건 경찰이 아니라 자기 귀였다. 완전범죄는 바깥이 아니라 안에서 무너진다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 1,
-        "total": 6,
-        "text": "You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings.",
-        "text_ko": "누나가 그토록 불길하게 여겼던 이 일이, 시작만큼은 아무 사고 없이 잘 풀렸다는 소식을 들으면 기뻐하겠지요.",
-        "note": "소설의 첫 문장이자 편지의 첫 줄. '아직은' 아무 일도 없다는 이 안심이, 뒤에 올 모든 재앙의 서두다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 2,
-        "total": 6,
-        "text": "I am already far north of London, and as I walk in the streets of Petersburgh, I feel a cold northern breeze play upon my cheeks.",
-        "text_ko": "저는 이미 런던보다 한참 북쪽에 와 있습니다. 페테르부르크 거리를 걸으면 차가운 북풍이 뺨을 스칩니다.",
-        "note": "미지의 북극을 향한 탐험가의 설렘. 그는 곧 얼음 위에서, 자기와 똑같은 욕심 때문에 망가진 남자를 만난다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 3,
-        "total": 6,
-        "text": "It was on a dreary night of November that I beheld the accomplishment of my toils.",
-        "text_ko": "내 오랜 수고가 결실을 맺는 것을 본 것은 어느 음산한 11월 밤이었다.",
-        "note": "창조의 순간을 '음산한'이라는 말로 연다. 성취와 후회가 같은 문장 안에 들어 있다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 4,
-        "total": 6,
-        "text": "I saw the dull yellow eye of the creature open; it breathed hard, and a convulsive motion agitated its limbs.",
-        "text_ko": "그 피조물의 흐릿한 노란 눈이 뜨이는 것을 보았다. 그것은 거칠게 숨을 몰아쉬었고, 경련이 팔다리를 훑고 지나갔다.",
-        "note": "괴물이 처음 숨을 쉰다. 그리고 창조자는 곧바로 도망친다. 이 소설의 비극은 창조가 아니라 유기에서 시작된다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 5,
-        "total": 6,
-        "text": "I ought to be thy Adam, but I am rather the fallen angel, whom thou drivest from joy for no misdeed.",
-        "text_ko": "나는 마땅히 당신의 아담이어야 했다. 그러나 나는 오히려 타락한 천사다. 아무 잘못도 없이 당신 손에 기쁨에서 쫓겨난.",
-        "note": "괴물이 프랑켄슈타인에게. 자신을 실패작이 아니라 버림받은 자식으로 규정한다. 이 소설에서 가장 논리적으로 말하는 인물이 괴물이다."
-      },
-      {
-        "work_id": "shelley_frankenstein",
-        "seq": 6,
-        "total": 6,
-        "text": "Beware; for I am fearless, and therefore powerful.",
-        "text_ko": "조심하라. 나는 두려움이 없고, 그러므로 강하다.",
-        "note": "잃을 것이 없는 존재의 선언. 창조자가 준 것이 아무것도 없기에 빼앗을 것도 없다."
       }
     ]
   }

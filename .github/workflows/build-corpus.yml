@@ -50,7 +50,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/segments.json data/passages
+          git add data/segments.json data/passages data/sources
           if git diff --staged --quiet; then
             echo "바뀐 내용이 없습니다."
             exit 0
