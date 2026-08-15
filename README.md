@@ -46,7 +46,7 @@
 **해외 트랙 (홀수 날)** — 원문 전체 회차 + 번역 전체 회차, 잇달아 20~30통
 
 ```
-📖 The Tell-Tale Heart — Edgar Allan Poe (1/6)
+📖 The Tell-Tale Heart — Edgar Allan Poe (1/10)
 
 True! nervous, very, very dreadfully nervous I had
 been and am; but why will you say that I am mad?
@@ -56,7 +56,7 @@ been and am; but why will you say that I am mad?
 … (영어 원문 회차 계속)
 ```
 ```
-🔎 고자질하는 심장 (1/6)
+🔎 고자질하는 심장 (1/10)
 
 그래! 나는 신경이 곤두서 있었다. 지독하게, 아주
 지독하게. 지금도 그렇다. 하지만 어째서 나를

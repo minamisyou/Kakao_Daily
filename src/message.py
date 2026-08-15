@@ -18,9 +18,6 @@ from .wrap import split_into_bubbles
 
 ORIGINAL_BUTTON = "원문 읽기"
 
-#: 진행도 표시가 최대로 길어졌을 때를 가정해 헤더 예산을 잡는다.
-_WORST_CASE_PROGRESS = "(9999/9999)"
-
 #: 하루 발송이 통제 불능으로 길어지는 걸 막는 안전선. 빌드 검증에서만 쓴다.
 MAX_BUBBLES_PER_DAY = 24
 
@@ -47,9 +44,16 @@ def _progress(segment: Segment) -> str:
     return f"({segment.seq}/{segment.total})"
 
 
-def header_budget(title: str, author: str) -> int:
-    """헤더 + 빈 줄이 차지하는 글자 수. 본문에 쓸 수 있는 양은 200에서 이걸 뺀 만큼."""
-    header = f"📖 {title} — {author} {_WORST_CASE_PROGRESS}"
+def header_budget(title: str, author: str, total: int = 9999) -> int:
+    """헤더 + 빈 줄이 차지하는 글자 수. 본문에 쓸 수 있는 양은 200에서 이걸 뺀 만큼.
+
+    `total`(그 작품의 전체 회차 수)까지 진행도 숫자가 커질 수 있으므로, 그
+    자릿수를 기준으로 예산을 잡는다. 짧은 단편은 회차 수가 적어 "(3/5)"면
+    충분한데 매번 "(9999/9999)" 몫을 비워두면 그만큼 본문이 줄고 말풍선
+    수가 쓸데없이 늘어난다.
+    """
+    progress = f"({total}/{total})"
+    header = f"📖 {title} — {author} {progress}"
     return len(header) + 2  # "\n\n"
 
 
@@ -64,7 +68,7 @@ def _bubble_texts(icon: str, title: str, author: str, segment: Segment, body: st
     if not body:
         return []
 
-    limit = KAKAO_TEXT_LIMIT - header_budget(title, author)
+    limit = KAKAO_TEXT_LIMIT - header_budget(title, author, segment.total)
     chunks = split_into_bubbles(body, limit)
     if not chunks:
         return []

@@ -31,15 +31,35 @@ class TestSplitIntoBubbles:
         for chunk in split_into_bubbles(text, limit=50):
             assert len(chunk) <= 50
 
-    def test_does_not_merge_across_paragraphs(self):
+    def test_merges_short_paragraphs_when_they_fit_together(self):
+        # 문단 경계에서 강제로 끊으면, 긴 문장이 문단 끝에서 hard_wrap으로
+        # 잘렸을 때 그 짧은 꼬리가 다음 문단과 합쳐질 기회를 잃는다.
         text = "짧은 문단.\n\n다른 문단."
-        assert split_into_bubbles(text, limit=100) == ["짧은 문단.", "다른 문단."]
+        assert split_into_bubbles(text, limit=100) == ["짧은 문단.\n\n다른 문단."]
+
+    def test_preserves_the_paragraph_break_inside_a_merged_bubble(self):
+        text = "짧은 문단.\n\n다른 문단."
+        assert split_into_bubbles(text, limit=100)[0] == "짧은 문단.\n\n다른 문단."
+
+    def test_splits_at_a_paragraph_boundary_when_they_do_not_fit_together(self):
+        text = "첫 문단 내용입니다.\n\n둘째 문단 내용입니다."
+        bubbles = split_into_bubbles(text, limit=15)
+        assert bubbles == ["첫 문단 내용입니다.", "둘째 문단 내용입니다."]
 
     def test_drops_blank_paragraphs(self):
         assert split_into_bubbles("첫 문단.\n\n\n\n둘째 문단.", limit=100) == [
-            "첫 문단.",
-            "둘째 문단.",
+            "첫 문단.\n\n둘째 문단."
         ]
+
+    def test_stranded_hard_wrap_tail_merges_into_the_next_paragraph(self):
+        # 실제로 터졌던 버그: 긴 문장이 문단 끝에서 hard_wrap으로 잘리면
+        # 짧은 꼬리가 문단 경계에 막혀 혼자 작은 말풍선이 됐었다.
+        long_sentence = " ".join(["단어"] * 40) + " 마지막꼬리."
+        text = f"{long_sentence}\n\n다음 문단은 짧다."
+        bubbles = split_into_bubbles(text, limit=60)
+        assert not any(len(b) < 15 for b in bubbles), (
+            f"고아 말풍선이 있다: {[b for b in bubbles if len(b) < 15]}"
+        )
 
     def test_oversized_single_sentence_is_wrapped_rather_than_dropped(self):
         sentence = " ".join(["단어"] * 60) + "."

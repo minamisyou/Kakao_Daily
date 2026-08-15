@@ -18,13 +18,25 @@ def split_sentences(paragraph: str) -> list[str]:
 
 
 def hard_wrap(sentence: str, limit: int) -> list[str]:
-    """한 문장이 통째로 예산을 넘을 때만 쓰는 최후 수단."""
+    """한 문장이 통째로 예산을 넘을 때만 쓰는 최후 수단.
+
+    매번 한도 끝까지 채우고 남는 만큼만 마지막 조각으로 떼어내면, 그
+    마지막 조각이 "eye forever." 처럼 몇 글자짜리 꼬리가 되기 쉽다. 필요한
+    조각 수를 먼저 정하고 그만큼 고르게 나눠, 꼬리가 뭉텅 짧아지는 일을
+    막는다.
+    """
+    if len(sentence) <= limit:
+        return [sentence]
+
+    piece_count = -(-len(sentence) // limit)  # ceil
+    target = -(-len(sentence) // piece_count)  # ceil, 조각마다 고르게
+
     chunks: list[str] = []
     remaining = sentence
-    while len(remaining) > limit:
-        cut = remaining.rfind(" ", 0, limit)
+    while len(remaining) > target:
+        cut = remaining.rfind(" ", 0, target + 1)
         if cut <= 0:
-            cut = limit
+            cut = target
         chunks.append(remaining[:cut].strip())
         remaining = remaining[cut:].strip()
     if remaining:
@@ -33,28 +45,39 @@ def hard_wrap(sentence: str, limit: int) -> list[str]:
 
 
 def split_into_bubbles(full_text: str, limit: int) -> list[str]:
-    """전문을 limit 글자 이하의 조각으로 나눈다.
+    """전문을 limit 글자 이하의 조각으로 나눈다. 문장 중간은 자르지 않는다.
 
-    문단을 넘나들지 않고, 문장 중간도 자르지 않는다. 읽는 맛이 거기서 갈린다.
+    문단 경계는 들어맞으면 그대로 살리되(버블 안에 "\\n\\n"으로 남는다),
+    강제로 거기서 버블을 끊지는 않는다. 강제로 끊으면, 긴 문장이 문단 끝에서
+    hard_wrap으로 잘려 짧은 꼬리만 남았을 때 그 꼬리가 다음 문단과 합쳐질
+    기회를 잃고 혼자 작은 말풍선이 돼 버린다.
     """
-    bubbles: list[str] = []
     paragraphs = [p.strip() for p in re.split(r"\n\s*\n", full_text) if p.strip()]
 
-    for paragraph in paragraphs:
-        buffer = ""
-        for sentence in split_sentences(paragraph):
-            for piece in (
-                hard_wrap(sentence, limit) if len(sentence) > limit else [sentence]
-            ):
-                candidate = f"{buffer} {piece}".strip() if buffer else piece
-                if len(candidate) <= limit:
-                    buffer = candidate
-                else:
-                    if buffer:
-                        bubbles.append(buffer)
-                    buffer = piece
+    # (조각, 새 문단의 시작인가) 목록으로 문단 구조 전체를 한 줄로 편다.
+    items: list[tuple[str, bool]] = []
+    for para_index, paragraph in enumerate(paragraphs):
+        for sent_index, sentence in enumerate(split_sentences(paragraph)):
+            pieces = hard_wrap(sentence, limit) if len(sentence) > limit else [sentence]
+            for piece_index, piece in enumerate(pieces):
+                starts_paragraph = para_index > 0 and sent_index == 0 and piece_index == 0
+                items.append((piece, starts_paragraph))
+
+    bubbles: list[str] = []
+    buffer = ""
+    for piece, starts_paragraph in items:
         if buffer:
+            separator = "\n\n" if starts_paragraph else " "
+            candidate = f"{buffer}{separator}{piece}"
+        else:
+            candidate = piece
+        if len(candidate) <= limit:
+            buffer = candidate
+        else:
             bubbles.append(buffer)
+            buffer = piece
+    if buffer:
+        bubbles.append(buffer)
     return bubbles
 
 
