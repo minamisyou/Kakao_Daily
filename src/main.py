@@ -8,7 +8,12 @@ import time
 
 from .config import Config, ConfigError, today_kst
 from .corpus import CorpusError, load_corpus, select_for_day
-from .kakao import KakaoError, refresh_access_token, send_text_memo
+from .kakao import (
+    KakaoError,
+    refresh_access_token,
+    send_text_memo,
+    troubleshooting_hint,
+)
 from .message import OutgoingMessage, build_messages
 
 #: 연속 발송 사이 간격. 카카오는 순서를 보장하지 않아서 살짝 띄운다.
@@ -78,7 +83,9 @@ def run() -> int:
         _preview(messages)
         return 0
 
-    tokens = refresh_access_token(config.rest_api_key, config.refresh_token)
+    tokens = refresh_access_token(
+        config.rest_api_key, config.refresh_token, config.client_secret
+    )
     if tokens.refresh_token and tokens.refresh_token != config.refresh_token:
         _persist_rotated_token(config, tokens.refresh_token)
 
@@ -105,6 +112,9 @@ def main() -> int:
         return 2
     except KakaoError as exc:
         logger.error("카카오 API 오류: %s", exc)
+        hint = troubleshooting_hint(exc)
+        if hint:
+            logger.error("%s", hint)
         return 3
     except Exception:  # noqa: BLE001 - 워크플로 로그에 원인을 남기고 실패시킨다.
         logger.exception("예상치 못한 오류로 발송에 실패했습니다.")

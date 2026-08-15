@@ -46,20 +46,35 @@ def _raise_for_kakao_error(response: requests.Response, action: str) -> dict:
     return payload
 
 
+def _with_client_secret(data: dict, client_secret: str | None) -> dict:
+    """Client Secret을 '사용함'으로 켜 둔 앱은 토큰 요청마다 이 값을 요구한다.
+
+    켜 놓고 빼먹으면 카카오가 invalid_client로 거절한다. 꺼져 있는 앱에
+    굳이 보내면 그것도 거절당하므로, 값이 있을 때만 싣는다.
+    """
+    if client_secret:
+        return {**data, "client_secret": client_secret}
+    return data
+
+
 def refresh_access_token(
     rest_api_key: str,
     refresh_token: str,
+    client_secret: str | None = None,
     session: requests.Session | None = None,
 ) -> TokenBundle:
     """refresh token으로 access token을 재발급한다."""
     http = session or requests
     response = http.post(
         TOKEN_URL,
-        data={
-            "grant_type": "refresh_token",
-            "client_id": rest_api_key,
-            "refresh_token": refresh_token,
-        },
+        data=_with_client_secret(
+            {
+                "grant_type": "refresh_token",
+                "client_id": rest_api_key,
+                "refresh_token": refresh_token,
+            },
+            client_secret,
+        ),
         timeout=TIMEOUT_SECONDS,
     )
     payload = _raise_for_kakao_error(response, "access token 갱신")
@@ -79,18 +94,22 @@ def exchange_authorization_code(
     rest_api_key: str,
     code: str,
     redirect_uri: str,
+    client_secret: str | None = None,
     session: requests.Session | None = None,
 ) -> TokenBundle:
     """최초 1회, 인가 코드를 토큰으로 교환한다 (scripts/get_token.py에서 사용)."""
     http = session or requests
     response = http.post(
         TOKEN_URL,
-        data={
-            "grant_type": "authorization_code",
-            "client_id": rest_api_key,
-            "redirect_uri": redirect_uri,
-            "code": code,
-        },
+        data=_with_client_secret(
+            {
+                "grant_type": "authorization_code",
+                "client_id": rest_api_key,
+                "redirect_uri": redirect_uri,
+                "code": code,
+            },
+            client_secret,
+        ),
         timeout=TIMEOUT_SECONDS,
     )
     payload = _raise_for_kakao_error(response, "인가 코드 교환")
@@ -138,6 +157,47 @@ def send_text_memo(
         timeout=TIMEOUT_SECONDS,
     )
     return _raise_for_kakao_error(response, "메시지 전송")
+
+
+#: 카카오 오류 코드는 원인을 거의 알려주지 않아서, 실제로 자주 걸리는
+#: 설정 문제를 짚어 준다.
+_HINTS: tuple[tuple[tuple[str, ...], str], ...] = (
+    (
+        ("invalid_client", "KOE010"),
+        "확인할 것:\n"
+        "  1. 카카오 콘솔 > 카카오 로그인 > 보안 > Client Secret이 '사용함'이면\n"
+        "     KAKAO_CLIENT_SECRET 환경변수에 그 코드를 넣어야 합니다.\n"
+        "     (반대로 '사용 안 함'인데 값을 넣어도 같은 오류가 납니다.)\n"
+        "  2. 앱 키 화면의 여러 키 중 'REST API 키'가 맞는지\n"
+        "     (네이티브/JavaScript/Admin 키를 넣으면 이 오류가 납니다.)\n"
+        "  3. 키 앞뒤에 공백이나 줄바꿈이 섞이지 않았는지",
+    ),
+    (
+        ("KOE006",),
+        "등록되지 않은 Redirect URI입니다. 카카오 콘솔 > 카카오 로그인 >\n"
+        "Redirect URI에 아래 주소를 글자 그대로 등록하세요 (끝 슬래시까지 동일해야 합니다).",
+    ),
+    (
+        ("invalid_grant", "KOE320"),
+        "인가 코드나 refresh token이 만료됐거나 이미 쓰였습니다.\n"
+        "scripts/get_token.py를 처음부터 다시 실행하세요.",
+    ),
+    (
+        ("insufficient scopes", "-402"),
+        "카카오 콘솔 > 카카오 로그인 > 동의항목에서 '카카오톡 메시지 전송'을\n"
+        "사용 설정한 뒤, 토큰을 다시 발급받아야 합니다. 동의항목을 바꿔도\n"
+        "이미 발급된 토큰에는 반영되지 않습니다.",
+    ),
+)
+
+
+def troubleshooting_hint(error: Exception) -> str:
+    """오류 메시지에서 원인을 추측해 안내문을 돌려준다. 짚이는 게 없으면 빈 문자열."""
+    text = str(error)
+    for needles, hint in _HINTS:
+        if any(needle in text for needle in needles):
+            return hint
+    return ""
 
 
 def build_authorize_url(rest_api_key: str, redirect_uri: str) -> str:

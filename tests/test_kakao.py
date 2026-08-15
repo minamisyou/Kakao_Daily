@@ -10,8 +10,10 @@ from src.kakao import (
     KakaoError,
     build_authorize_url,
     build_text_template,
+    exchange_authorization_code,
     refresh_access_token,
     send_text_memo,
+    troubleshooting_hint,
 )
 
 
@@ -82,6 +84,90 @@ class TestRefreshAccessToken:
         session = FakeSession(FakeResponse({"token_type": "bearer"}))
         with pytest.raises(KakaoError, match="access_token이 없습니다"):
             refresh_access_token("KEY", "RT", session=session)
+
+
+class TestClientSecret:
+    """Client Secret을 켠 앱은 토큰 요청마다 값을 요구하고, 안 켠 앱은 거부한다.
+    빠뜨리든 넣지 말아야 할 때 넣든 카카오는 똑같이 invalid_client로 답한다."""
+
+    def test_refresh_omits_client_secret_when_unset(self):
+        session = FakeSession(FakeResponse({"access_token": "AT"}))
+        refresh_access_token("KEY", "RT", session=session)
+        assert "client_secret" not in session.data
+
+    def test_refresh_omits_client_secret_when_blank(self):
+        session = FakeSession(FakeResponse({"access_token": "AT"}))
+        refresh_access_token("KEY", "RT", "", session=session)
+        assert "client_secret" not in session.data
+
+    def test_refresh_includes_client_secret_when_set(self):
+        session = FakeSession(FakeResponse({"access_token": "AT"}))
+        refresh_access_token("KEY", "RT", "SECRET", session=session)
+        assert session.data["client_secret"] == "SECRET"
+
+    def test_code_exchange_includes_client_secret_when_set(self):
+        session = FakeSession(FakeResponse({"access_token": "AT", "refresh_token": "RT"}))
+        exchange_authorization_code(
+            "KEY", "CODE", "http://localhost:8080/callback", "SECRET", session=session
+        )
+        assert session.data["client_secret"] == "SECRET"
+
+    def test_code_exchange_omits_client_secret_when_unset(self):
+        session = FakeSession(FakeResponse({"access_token": "AT", "refresh_token": "RT"}))
+        exchange_authorization_code(
+            "KEY", "CODE", "http://localhost:8080/callback", session=session
+        )
+        assert "client_secret" not in session.data
+
+
+class TestExchangeAuthorizationCode:
+    def test_sends_the_authorization_code_grant(self):
+        session = FakeSession(FakeResponse({"access_token": "AT", "refresh_token": "RT"}))
+        exchange_authorization_code(
+            "KEY", "CODE", "http://localhost:8080/callback", session=session
+        )
+        assert session.url == TOKEN_URL
+        assert session.data["grant_type"] == "authorization_code"
+        assert session.data["code"] == "CODE"
+        assert session.data["redirect_uri"] == "http://localhost:8080/callback"
+
+    def test_returns_the_refresh_token(self):
+        session = FakeSession(FakeResponse({"access_token": "AT", "refresh_token": "RT"}))
+        tokens = exchange_authorization_code(
+            "KEY", "CODE", "http://localhost:8080/callback", session=session
+        )
+        assert tokens.refresh_token == "RT"
+
+    def test_invalid_client_raises(self):
+        session = FakeSession(
+            FakeResponse(
+                {"error": "invalid_client", "error_description": "bad client id or secret"},
+                status_code=401,
+            )
+        )
+        with pytest.raises(KakaoError, match="invalid_client"):
+            exchange_authorization_code(
+                "KEY", "CODE", "http://localhost:8080/callback", session=session
+            )
+
+
+class TestTroubleshootingHint:
+    def test_invalid_client_points_at_client_secret_and_key_type(self):
+        hint = troubleshooting_hint(KakaoError("... (code=invalid_client)"))
+        assert "Client Secret" in hint
+        assert "REST API 키" in hint
+
+    def test_redirect_uri_mismatch_is_recognised(self):
+        assert "Redirect URI" in troubleshooting_hint(KakaoError("KOE006 ..."))
+
+    def test_expired_grant_points_at_reissuing(self):
+        assert "get_token.py" in troubleshooting_hint(KakaoError("invalid_grant"))
+
+    def test_missing_scope_points_at_the_consent_setting(self):
+        assert "동의항목" in troubleshooting_hint(KakaoError("insufficient scopes."))
+
+    def test_unrecognised_error_gets_no_hint(self):
+        assert troubleshooting_hint(KakaoError("서버가 응답하지 않습니다")) == ""
 
 
 class TestTextTemplate:

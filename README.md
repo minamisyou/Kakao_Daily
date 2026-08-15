@@ -75,6 +75,11 @@ cd Kakao_Daily
 pip install -r requirements.txt
 
 export KAKAO_REST_API_KEY=<위에서 복사한 REST API 키>
+
+# 카카오 로그인 > 보안 > Client Secret이 '사용함'인 경우에만 추가로 필요합니다.
+# '사용 안 함'이면 넣지 마세요. 넣으면 오히려 invalid_client가 납니다.
+export KAKAO_CLIENT_SECRET=<Client Secret 코드>
+
 python scripts/get_token.py
 ```
 
@@ -90,6 +95,7 @@ Secrets (`New repository secret`):
 |---|---|
 | `KAKAO_REST_API_KEY` | 카카오 REST API 키 |
 | `KAKAO_REFRESH_TOKEN` | 2단계에서 나온 값 |
+| `KAKAO_CLIENT_SECRET` | Client Secret을 '사용함'으로 켠 경우에만. 안 켰으면 등록하지 마세요 |
 | `GH_PAT` | `repo` 권한 Personal Access Token — 토큰 자동 갱신용 |
 
 Variables (`Variables` 탭, 선택사항):
@@ -260,7 +266,9 @@ seq       = (그날까지 해당 트랙이 등장한 횟수) % 트랙 조각 수
 
 | 증상 | 원인과 해결 |
 |---|---|
-| `insufficient scopes` | 카카오 콘솔 동의항목에서 `talk_message`가 꺼져 있다. 켜고 `get_token.py`를 다시 실행 |
+| `invalid_client` (KOE010) | ① Client Secret을 '사용함'으로 켜 뒀는데 `KAKAO_CLIENT_SECRET`을 안 넣었다 (또는 그 반대) ② REST API 키가 아니라 네이티브/JavaScript/Admin 키를 넣었다 ③ 키에 공백·줄바꿈이 섞였다 |
+| `KOE006` | Redirect URI가 콘솔에 등록돼 있지 않다. `http://localhost:8080/callback`을 끝 슬래시까지 똑같이 등록 |
+| `insufficient scopes` | 카카오 콘솔 동의항목에서 `talk_message`가 꺼져 있다. 켜고 `get_token.py`를 다시 실행 (동의항목을 바꿔도 기존 토큰에는 반영되지 않는다) |
 | `invalid_grant` / `refresh token expired` | refresh token이 만료됐다. `get_token.py`로 재발급 후 Secret 교체 |
 | 워크플로는 성공인데 카톡이 안 온다 | 카카오톡 '나와의 채팅'을 확인. 다른 기기에 로그인된 계정으로 인가했을 수 있다 |
 | 발송 시각이 8시가 아니다 | GitHub Actions 크론은 부하에 따라 수 분~수십 분 늦게 뜬다. 정시가 중요하면 개인 서버 crontab으로 옮기면 된다 (`python -m src.main`만 실행하면 됨) |

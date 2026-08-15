@@ -30,6 +30,7 @@ from src.kakao import (  # noqa: E402
     KakaoError,
     build_authorize_url,
     exchange_authorization_code,
+    troubleshooting_hint,
 )
 
 DEFAULT_PORT = 8080
@@ -95,6 +96,9 @@ def main() -> int:
         )
         return 2
 
+    # Client Secret을 '사용함'으로 켜 둔 앱만 필요하다. 꺼져 있으면 비워 둔다.
+    client_secret = os.environ.get("KAKAO_CLIENT_SECRET", "").strip()
+
     port = int(os.environ.get("CALLBACK_PORT", DEFAULT_PORT))
     redirect_uri = f"http://localhost:{port}{CALLBACK_PATH}"
 
@@ -109,8 +113,17 @@ def main() -> int:
 
     authorize_url = build_authorize_url(rest_api_key, redirect_uri)
 
-    print(f"카카오 개발자 콘솔의 Redirect URI에 다음 주소가 등록돼 있어야 합니다:")
+    print("카카오 개발자 콘솔의 Redirect URI에 다음 주소가 등록돼 있어야 합니다:")
     print(f"  {redirect_uri}\n")
+    print(
+        "Client Secret: "
+        + (
+            "사용함 (KAKAO_CLIENT_SECRET 적용됨)"
+            if client_secret
+            else "미설정 — 콘솔에서 '사용함'으로 켜 두셨다면 KAKAO_CLIENT_SECRET을 넣어야 합니다"
+        )
+        + "\n"
+    )
     print("브라우저에서 동의 화면을 엽니다. 열리지 않으면 아래 주소를 직접 여세요:")
     print(f"  {authorize_url}\n")
 
@@ -131,10 +144,15 @@ def main() -> int:
 
     try:
         tokens = exchange_authorization_code(
-            rest_api_key, _CallbackHandler.code, redirect_uri
+            rest_api_key, _CallbackHandler.code, redirect_uri, client_secret
         )
     except KakaoError as exc:
         print(f"\n토큰 교환 실패: {exc}", file=sys.stderr)
+        hint = troubleshooting_hint(exc)
+        if hint:
+            print(f"\n{hint}", file=sys.stderr)
+            if "KOE006" in str(exc):
+                print(f"  {redirect_uri}", file=sys.stderr)
         return 1
 
     if not tokens.refresh_token:
@@ -151,6 +169,8 @@ def main() -> int:
     print("=" * 60)
     print(f"KAKAO_REST_API_KEY  = {rest_api_key}")
     print(f"KAKAO_REFRESH_TOKEN = {tokens.refresh_token}")
+    if client_secret:
+        print(f"KAKAO_CLIENT_SECRET = {client_secret}")
     print("=" * 60)
     print("\n이 값은 비밀번호와 같습니다. 저장소나 채팅에 붙여넣지 마세요.")
     return 0

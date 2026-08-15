@@ -75,6 +75,9 @@ def today_kst(now: datetime | None = None) -> date:
 class Config:
     rest_api_key: str
     refresh_token: str
+    #: 카카오 콘솔에서 Client Secret을 '사용함'으로 켠 앱만 필요하다.
+    #: 꺼져 있으면 빈 문자열이어야 하고, 넣으면 오히려 거절당한다.
+    client_secret: str
     start_date: date
     track_pattern: tuple[str, ...]
     segments_path: Path
@@ -89,6 +92,7 @@ class Config:
         return cls(
             rest_api_key=_required("KAKAO_REST_API_KEY", dry_run),
             refresh_token=_required("KAKAO_REFRESH_TOKEN", dry_run),
+            client_secret=os.environ.get("KAKAO_CLIENT_SECRET", "").strip(),
             start_date=parse_date(
                 os.environ.get("START_DATE", "2026-01-01"), "START_DATE"
             ),
