@@ -270,20 +270,6 @@
       "translation_by": "Claude (전문 완역, 회차별로 저장소에서 확인·수정 가능)"
     },
     {
-      "id": "na_dohyang_samnyong",
-      "track": "kr",
-      "title": "벙어리 삼룡이",
-      "author": "나도향",
-      "author_death": 1926,
-      "published": 1925,
-      "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
-      "source": {
-        "type": "wikisource",
-        "lang": "ko",
-        "page": "벙어리 삼룡이"
-      }
-    },
-    {
       "id": "kim_dongin_potato",
       "track": "kr",
       "title": "감자",
@@ -296,6 +282,22 @@
         "lang": "ko",
         "page": "감자"
       }
+    }
+  ],
+  "_backlog_kr": [
+    {
+      "id": "na_dohyang_samnyong",
+      "track": "kr",
+      "title": "벙어리 삼룡이",
+      "author": "나도향",
+      "author_death": 1926,
+      "published": 1925,
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "벙어리 삼룡이"
+      },
+      "status": "== 라이선스 == 상용구 오인 버그를 고친 뒤 재시도했지만 여전히 10자만 받아온다. 본문 자체가 하위 문서(예: '벙어리 삼룡이/1')로 나뉘어 있거나, Page: 네임스페이스에서 <pages index=... /> 전재(transclusion)로 채워지는 페이지라 TextExtracts가 못 읽는 것으로 보인다. 실제 위키텍스트 구조를 확인해야 한다."
     },
     {
       "id": "kim_dongin_baettaragi",
@@ -304,12 +306,12 @@
       "author": "김동인",
       "author_death": 1951,
       "published": 1921,
-      "source_url": "https://ko.wikisource.org/wiki/배따라기",
       "source": {
         "type": "wikisource",
         "lang": "ko",
         "page": "배따라기"
-      }
+      },
+      "status": "== 라이선스 == 상용구 오인 버그를 고친 뒤 재시도했지만 여전히 extract가 완전히 비어 있다. 동음이의어 안내(항구)나 넘겨주기 문서일 가능성, 혹은 삼룡이·물레방아와 같은 전재 구조 문제일 수 있다."
     },
     {
       "id": "na_dohyang_watermill",
@@ -318,15 +320,14 @@
       "author": "나도향",
       "author_death": 1926,
       "published": 1925,
-      "source_url": "https://ko.wikisource.org/wiki/물레방아",
       "source": {
         "type": "wikisource",
         "lang": "ko",
         "page": "물레방아"
-      }
+      },
+      "status": "== 라이선스 == 상용구 오인 버그를 고친 뒤 재시도했지만 여전히 10자만 받아온다. 삼룡이와 같은 증상 — 본문이 하위 문서/전재 구조로 나뉘어 있을 가능성이 높다."
     }
   ],
-  "_backlog_kr": [],
   "_backlog_en": [
     {
       "_note": "아래는 works에 아직 없다 — 완역이 끝나지 않았다. 이어서 번역하려면 data/sources/<id>.txt를 fetch_sources.py로 받고, data/passages/<id>.json에 원문·번역 회차를 채운 뒤 이 항목을 위 works 배열로 옮기면 된다.",
