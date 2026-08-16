@@ -29,6 +29,9 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: 원문 수집
+        # 제목을 잘못 짐작해 한두 편이 실패해도, 성공한 나머지로 빌드를 계속한다.
+        # 실패한 작품은 build_corpus.py가 알아서 건너뛴다(원문·회차 둘 다 없으면).
+        continue-on-error: true
         run: python scripts/fetch_sources.py
 
       - name: 큐레이션 구절을 원문과 대조
