@@ -1,25 +1,25 @@
-"""트랙 편성과 날짜 → 조각 매핑."""
+"""날짜 → 발송 큐 인덱싱."""
 
 from datetime import date
 
 import pytest
 
-from src.config import parse_track_pattern
+import json
+
 from src.corpus import (
     Corpus,
     CorpusError,
     Segment,
     Work,
     day_index,
-    position_in_track,
+    load_corpus,
     select_for_day,
-    track_for_day,
 )
 
 START = date(2026, 1, 1)
 
 
-def make_corpus(kr_count: int = 3, en_count: int = 2) -> Corpus:
+def make_corpus() -> Corpus:
     works = {
         "kr_work": Work("kr_work", "kr", "봄·봄", "김유정", "", "https://example.test/kr"),
         "en_work": Work(
@@ -27,16 +27,15 @@ def make_corpus(kr_count: int = 3, en_count: int = 2) -> Corpus:
             "https://example.test/en",
         ),
     }
-    tracks = {
-        "kr": [
-            Segment("kr_work", i, kr_count, f"한국 {i}") for i in range(1, kr_count + 1)
-        ],
-        "en": [
-            Segment("en_work", i, en_count, f"english {i}", f"번역 {i}", f"해설 {i}")
-            for i in range(1, en_count + 1)
-        ],
-    }
-    return Corpus(works=works, tracks=tracks)
+    # 실제 빌드 결과처럼, 한 작품이 끝나야 언어가 바뀌는 순서로 미리 엮여 있다.
+    queue = [
+        Segment("kr_work", 1, 3, "한국 1"),
+        Segment("kr_work", 2, 3, "한국 2"),
+        Segment("kr_work", 3, 3, "한국 3"),
+        Segment("en_work", 1, 2, "english 1", "번역 1", "해설 1"),
+        Segment("en_work", 2, 2, "english 2", "번역 2", "해설 2"),
+    ]
+    return Corpus(works=works, queue=queue)
 
 
 class TestDayIndex:
@@ -55,72 +54,84 @@ class TestDayIndex:
             day_index(date(2026, 1, 1), date(2026, 6, 1))
 
 
-class TestTrackPattern:
-    def test_alternates_daily(self):
-        pattern = parse_track_pattern("kr,en")
-        assert [track_for_day(i, pattern) for i in range(4)] == ["kr", "en", "kr", "en"]
-
-    def test_supports_uneven_pattern(self):
-        pattern = parse_track_pattern("kr,kr,en")
-        assert [track_for_day(i, pattern) for i in range(6)] == [
-            "kr", "kr", "en", "kr", "kr", "en",
-        ]
-
-    def test_each_track_keeps_its_own_progress(self):
-        pattern = parse_track_pattern("kr,kr,en")
-        # 6일 동안 kr은 4번, en은 2번 나왔다.
-        assert position_in_track(6, pattern, "kr") == 4
-        assert position_in_track(6, pattern, "en") == 2
-
-    def test_position_advances_one_per_appearance(self):
-        pattern = parse_track_pattern("kr,en")
-        kr_positions = [
-            position_in_track(i, pattern, "kr")
-            for i in range(0, 8)
-            if track_for_day(i, pattern) == "kr"
-        ]
-        assert kr_positions == [0, 1, 2, 3]
-
-    def test_rejects_track_missing_from_pattern(self):
-        with pytest.raises(CorpusError, match="트랙이 없습니다"):
-            position_in_track(3, ("kr",), "en")
-
-
 class TestSelection:
-    def test_alternating_days_pick_alternating_tracks(self):
+    def test_first_day_picks_the_first_entry_in_the_queue(self):
         corpus = make_corpus()
-        pattern = ("kr", "en")
-        tracks = [
-            select_for_day(corpus, START.fromordinal(START.toordinal() + i), START, pattern).track
-            for i in range(4)
+        selection = select_for_day(corpus, START, START)
+        assert selection.track == "kr"
+        assert selection.segment.seq == 1
+
+    def test_the_same_work_continues_day_after_day_until_it_finishes(self):
+        # 큐 안에서는 요일이 아니라 큐 순서 그대로 진행된다 — 작품이
+        # 완결되기 전까지는 같은 트랙이 이어져야 한다.
+        corpus = make_corpus()
+        tracks_and_seqs = [
+            (select_for_day(corpus, date(2026, 1, 1 + i), START).track,
+             select_for_day(corpus, date(2026, 1, 1 + i), START).segment.seq)
+            for i in range(5)
         ]
-        assert tracks == ["kr", "en", "kr", "en"]
+        assert tracks_and_seqs == [
+            ("kr", 1), ("kr", 2), ("kr", 3), ("en", 1), ("en", 2)
+        ]
+
+    def test_language_only_switches_when_the_current_work_finishes(self):
+        corpus = make_corpus()
+        # 한국 작품 3회차(day 2)까지는 여전히 kr이어야 하고, en은 그 뒤에야 나온다.
+        assert select_for_day(corpus, date(2026, 1, 3), START).track == "kr"
+        assert select_for_day(corpus, date(2026, 1, 4), START).track == "en"
 
     def test_same_day_gives_same_segment(self):
         corpus = make_corpus()
-        today = date(2026, 3, 9)
-        first = select_for_day(corpus, today, START, ("kr", "en"))
-        second = select_for_day(corpus, today, START, ("kr", "en"))
+        today = date(2026, 1, 2)
+        first = select_for_day(corpus, today, START)
+        second = select_for_day(corpus, today, START)
         assert first.segment == second.segment
 
-    def test_wraps_around_after_corpus_is_exhausted(self):
-        corpus = make_corpus(kr_count=3)
-        pattern = ("kr", "en")
-        # kr 트랙은 3조각뿐이므로 4번째 등장(= 6일차)에 처음으로 돌아간다.
-        first_day = select_for_day(corpus, date(2026, 1, 1), START, pattern)
-        wrapped = select_for_day(corpus, date(2026, 1, 7), START, pattern)
-        assert first_day.segment.seq == 1
-        assert wrapped.segment.seq == 1
-
-    def test_empty_track_reports_which_track(self):
-        corpus = Corpus(works=make_corpus().works, tracks={"kr": [], "en": []})
-        with pytest.raises(CorpusError, match="'kr' 트랙에 조각이 없습니다"):
-            select_for_day(corpus, START, START, ("kr", "en"))
+    def test_wraps_around_after_the_whole_queue_is_exhausted(self):
+        corpus = make_corpus()
+        # 큐 길이가 5이므로 6일째(day_index=5)에 처음으로 돌아간다.
+        first_day = select_for_day(corpus, date(2026, 1, 1), START)
+        wrapped = select_for_day(corpus, date(2026, 1, 6), START)
+        assert first_day.segment == wrapped.segment
 
     def test_unknown_work_id_is_reported(self):
         corpus = Corpus(
             works={},
-            tracks={"kr": [Segment("ghost", 1, 1, "본문")], "en": []},
+            queue=[Segment("ghost", 1, 1, "본문")],
         )
         with pytest.raises(CorpusError, match="알 수 없는 작품"):
-            select_for_day(corpus, START, START, ("kr",))
+            select_for_day(corpus, START, START)
+
+
+class TestLoadCorpus:
+    def test_missing_file_is_reported(self, tmp_path):
+        with pytest.raises(CorpusError, match="코퍼스가 없습니다"):
+            load_corpus(tmp_path / "missing.json")
+
+    def test_empty_queue_is_rejected(self, tmp_path):
+        path = tmp_path / "segments.json"
+        path.write_text(json.dumps({"works": {}, "queue": []}), encoding="utf-8")
+        with pytest.raises(CorpusError, match="조각이 하나도 없습니다"):
+            load_corpus(path)
+
+    def test_loads_works_and_queue(self, tmp_path):
+        path = tmp_path / "segments.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "works": {
+                        "kr_work": {
+                            "track": "kr", "title": "봄·봄", "author": "김유정",
+                            "source_url": "https://example.test/kr",
+                        }
+                    },
+                    "queue": [
+                        {"work_id": "kr_work", "seq": 1, "total": 1, "text": "본문"}
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        corpus = load_corpus(path)
+        assert corpus.queue[0].text == "본문"
+        assert corpus.works["kr_work"].title == "봄·봄"

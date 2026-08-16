@@ -67,7 +67,7 @@ def run() -> int:
     corpus = load_corpus(config.segments_path)
 
     today = today_kst()
-    selection = select_for_day(corpus, today, config.start_date, config.track_pattern)
+    selection = select_for_day(corpus, today, config.start_date)
     messages = build_messages(selection)
 
     logger.info(

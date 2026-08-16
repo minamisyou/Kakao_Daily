@@ -3,6 +3,10 @@
 진행 상태를 파일에 저장하지 않고 날짜에서 직접 계산한다. 덕분에 같은 날
 두 번 실행해도 같은 결과가 나오고(멱등), 하루 걸러도 다음 날 알아서 제자리를
 찾는다.
+
+편성은 하루 단위로 언어를 번갈아 넣는 게 아니라, **작품 하나가 완결돼야만
+언어가 바뀌는** 순서로 미리 하나의 큐로 엮여 있다(build_corpus.py에서 만든다).
+그 큐를 day_index로 그냥 인덱싱하면 된다 — 요일 패턴 계산이 필요 없다.
 """
 
 from __future__ import annotations
@@ -66,7 +70,9 @@ class Segment:
 @dataclass(frozen=True)
 class Corpus:
     works: dict[str, Work]
-    tracks: dict[str, list[Segment]]
+    #: 발송 순서 그대로 늘어놓은 하나의 큐. build_corpus.py가 "작품이 끝나야
+    #: 언어가 바뀐다"는 규칙으로 미리 엮어 둔다.
+    queue: list[Segment]
 
     def work_for(self, segment: Segment) -> Work:
         try:
@@ -100,13 +106,10 @@ def load_corpus(path: Path) -> Corpus:
         work_id: Work.from_dict({"id": work_id, **meta})
         for work_id, meta in raw.get("works", {}).items()
     }
-    tracks = {
-        track: [Segment.from_dict(item) for item in items]
-        for track, items in raw.get("tracks", {}).items()
-    }
-    if not any(tracks.values()):
+    queue = [Segment.from_dict(item) for item in raw.get("queue", [])]
+    if not queue:
         raise CorpusError(f"코퍼스에 조각이 하나도 없습니다: {path}")
-    return Corpus(works=works, tracks=tracks)
+    return Corpus(works=works, queue=queue)
 
 
 def day_index(today: date, start_date: date) -> int:
@@ -119,45 +122,10 @@ def day_index(today: date, start_date: date) -> int:
     return delta
 
 
-def track_for_day(index: int, pattern: tuple[str, ...]) -> str:
-    return pattern[index % len(pattern)]
-
-
-def position_in_track(index: int, pattern: tuple[str, ...], track: str) -> int:
-    """day_index까지 해당 트랙이 몇 번째로 등장하는지 (0부터).
-
-    패턴이 'kr,kr,en'처럼 비대칭이어도 각 트랙이 자기 진도를 따로 지킨다.
-    """
-    period = len(pattern)
-    per_period = pattern.count(track)
-    if per_period == 0:
-        raise CorpusError(f"TRACK_PATTERN에 '{track}' 트랙이 없습니다: {pattern}")
-    full_periods, remainder = divmod(index, period)
-    return full_periods * per_period + pattern[:remainder].count(track)
-
-
-def select_for_day(
-    corpus: Corpus,
-    today: date,
-    start_date: date,
-    pattern: tuple[str, ...],
-) -> Selection:
+def select_for_day(corpus: Corpus, today: date, start_date: date) -> Selection:
     """오늘 보낼 조각 하나를 고른다."""
     index = day_index(today, start_date)
-    track = track_for_day(index, pattern)
-
-    segments = corpus.tracks.get(track) or []
-    if not segments:
-        raise CorpusError(
-            f"'{track}' 트랙에 조각이 없습니다. "
-            f"data/passages에 해당 트랙 작품을 추가하고 코퍼스를 다시 빌드하세요."
-        )
-
     # 코퍼스를 다 돌면 처음으로 돌아가 다시 연재한다.
-    segment = segments[position_in_track(index, pattern, track) % len(segments)]
-    return Selection(
-        track=track,
-        work=corpus.work_for(segment),
-        segment=segment,
-        day_index=index,
-    )
+    segment = corpus.queue[index % len(corpus.queue)]
+    work = corpus.work_for(segment)
+    return Selection(track=work.track, work=work, segment=segment, day_index=index)

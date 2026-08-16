@@ -45,21 +45,6 @@ def parse_receiver_uuids(raw: str) -> tuple[str, ...]:
     return tuple(part.strip() for part in raw.split(",") if part.strip())
 
 
-def parse_track_pattern(raw: str) -> tuple[str, ...]:
-    """'kr,en' 또는 'kr,kr,en' 형태의 편성 패턴을 파싱한다.
-
-    패턴은 날짜 인덱스에 순환 적용된다. 'kr,kr,en'이면 3일 중 2일은
-    한국 근대소설, 1일은 해외 고전이 나간다.
-    """
-    tracks = tuple(part.strip() for part in raw.split(",") if part.strip())
-    if not tracks:
-        raise ConfigError("TRACK_PATTERN이 비어 있습니다. 예: 'kr,en'")
-    unknown = sorted({t for t in tracks if t not in {"kr", "en"}})
-    if unknown:
-        raise ConfigError(f"TRACK_PATTERN에 알 수 없는 트랙이 있습니다: {unknown}")
-    return tracks
-
-
 def parse_date(raw: str, field: str) -> date:
     try:
         return datetime.strptime(raw.strip(), "%Y-%m-%d").date()
@@ -87,7 +72,6 @@ class Config:
     #: 비즈니스 전환 전에는 앱의 팀 멤버로 등록된 계정끼리만 가능하다.
     receiver_uuids: tuple[str, ...]
     start_date: date
-    track_pattern: tuple[str, ...]
     segments_path: Path
     dry_run: bool
     #: 갱신된 refresh token을 적어둘 경로. 워크플로가 읽어 Secret을 교체한다.
@@ -103,9 +87,8 @@ class Config:
             client_secret=os.environ.get("KAKAO_CLIENT_SECRET", "").strip(),
             receiver_uuids=parse_receiver_uuids(os.environ.get("KAKAO_RECEIVER_UUIDS", "")),
             start_date=parse_date(
-                os.environ.get("START_DATE", "2026-01-01"), "START_DATE"
+                os.environ.get("START_DATE", "2026-08-17"), "START_DATE"
             ),
-            track_pattern=parse_track_pattern(os.environ.get("TRACK_PATTERN", "kr,en")),
             segments_path=Path(
                 os.environ.get("SEGMENTS_PATH", str(DEFAULT_SEGMENTS_PATH))
             ),

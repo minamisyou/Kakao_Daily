@@ -9,6 +9,12 @@
 해외 트랙은 원문과 번역이 1:1로 짝지어져 있어야 하므로 항상 2번을 쓴다.
 번역은 사람(또는 이 저장소를 채우는 사람)이 직접 써야 하기 때문이다.
 
+편성은 요일로 언어를 나누지 않는다. **작품 하나가 완결돼야만 언어가
+바뀐다** — 다른 트랙에 아직 안 읽은 작품이 있으면 그쪽으로 넘어가고,
+없으면 지금 트랙에서 다음 작품으로 계속 이어간다. 그렇게 만든 하나의
+발송 순서(queue)를 segments.json에 그대로 저장하고, 발송 시점에는
+day_index로 그 큐를 인덱싱하기만 하면 된다.
+
 한 회차는 발송 시점에 카카오 200자 말풍선 여러 통으로 쪼개진다(src/message.py).
 여기서는 그 쪼개기가 실제로 성공하는지, 하루 발송이 너무 길어지지 않는지만
 미리 검증한다. 새벽에 발송이 깨지는 것보다 빌드가 깨지는 게 낫다.
@@ -38,6 +44,9 @@ OUTPUT_PATH = REPO_ROOT / "data" / "segments.json"
 #: 회차 하나의 목표 분량. 200자 말풍선 기준 10~15통 정도가 되는 크기로 잡았다.
 INSTALLMENT_TARGET_CHARS = 2200
 INSTALLMENT_HARD_CAP_CHARS = 2800
+
+#: 두 트랙 다 작품이 남아 있을 때, 어느 쪽부터 시작할지.
+START_TRACK = "kr"
 
 
 class BuildError(Exception):
@@ -87,6 +96,47 @@ def build_segments_for(work_meta: dict) -> tuple[list[dict], str]:
     return list(passages), f"큐레이션 회차 ({len(passages)}회차)"
 
 
+def merge_into_queue(
+    works_by_track: dict[str, list[tuple[str, list[dict]]]],
+    start_track: str = START_TRACK,
+) -> list[tuple[str, str, dict]]:
+    """작품이 끝나야 언어가 바뀌는 순서로 병합한다.
+
+    지금 트랙의 작품 하나를 다 넣고 나서, 다른 트랙에 아직 안 읽은 작품이
+    있으면 그쪽으로 넘어간다. 없으면(예: 해외 트랙에 완역작이 하나뿐일 때)
+    지금 트랙에서 계속 다음 작품으로 이어간다. 두 트랙 다 바닥나면 멈춘다 —
+    그 뒤로는 day_index % len(queue)로 처음부터 반복된다.
+
+    반환값은 (track, work_id, 원본 회차 dict)의 리스트.
+    """
+    tracks = [t for t in works_by_track if works_by_track[t]]
+    if not tracks:
+        return []
+    active = start_track if start_track in tracks else tracks[0]
+    pointers = {t: 0 for t in tracks}
+    queue: list[tuple[str, str, dict]] = []
+
+    while True:
+        if pointers[active] >= len(works_by_track[active]):
+            candidates = [t for t in tracks if pointers[t] < len(works_by_track[t])]
+            if not candidates:
+                break
+            active = candidates[0]
+            continue
+
+        work_id, segments = works_by_track[active][pointers[active]]
+        queue.extend((active, work_id, seg) for seg in segments)
+        pointers[active] += 1
+
+        other_candidates = [
+            t for t in tracks if t != active and pointers[t] < len(works_by_track[t])
+        ]
+        if other_candidates:
+            active = other_candidates[0]
+
+    return queue
+
+
 def validate(work: Work, segment: Segment) -> None:
     """실제 발송 경로로 말풍선을 조립해 본다. 여기서 터지면 빌드 실패."""
     selection = Selection(track=work.track, work=work, segment=segment, day_index=0)
@@ -107,7 +157,7 @@ def validate(work: Work, segment: Segment) -> None:
 def build() -> dict:
     works_meta = load_works()
     works_out: dict[str, dict] = {}
-    tracks: dict[str, list[dict]] = {"kr": [], "en": []}
+    works_by_track: dict[str, list[tuple[str, list[dict]]]] = {}
     report: list[str] = []
 
     for meta in works_meta:
@@ -124,48 +174,60 @@ def build() -> dict:
             "title_original": meta.get("title_original", ""),
             "source_url": meta["source_url"],
         }
-        work = Work.from_dict({"id": work_id, **works_out[work_id]})
-
-        total = len(raw_segments)
-        for index, passage in enumerate(raw_segments, start=1):
-            segment = Segment(
-                work_id=work_id,
-                seq=index,
-                total=total,
-                text=passage["text"].strip(),
-                text_ko=passage.get("text_ko", "").strip(),
-                note=passage.get("note", "").strip(),
-            )
-            validate(work, segment)
-            entry = {
-                "work_id": segment.work_id,
-                "seq": segment.seq,
-                "total": segment.total,
-                "text": segment.text,
-            }
-            if segment.text_ko:
-                entry["text_ko"] = segment.text_ko
-            if segment.note:
-                entry["note"] = segment.note
-            tracks[meta["track"]].append(entry)
+        works_by_track.setdefault(meta["track"], []).append((work_id, raw_segments))
 
     print("작품별 빌드 결과:")
     print("\n".join(report))
-    for track, items in tracks.items():
-        total_chars = sum(len(item["text"]) for item in items)
-        print(f"  → {track} 트랙 총 {len(items)}회차, {total_chars:,}자")
 
-    if not tracks["kr"] or not tracks["en"]:
+    if len(works_by_track) < 2 or any(not v for v in works_by_track.values()):
         raise BuildError(
-            "두 트랙 모두 회차가 있어야 편성이 돌아갑니다. "
+            "두 트랙 모두 작품이 있어야 편성이 돌아갑니다. "
             "비어 있는 트랙에 작품을 추가하세요."
         )
+
+    ordered_queue = merge_into_queue(works_by_track)
+    total_by_work: dict[str, int] = {}
+    for _track, work_id, _passage in ordered_queue:
+        total_by_work[work_id] = total_by_work.get(work_id, 0) + 1
+
+    queue_out: list[dict] = []
+    seq_by_work: dict[str, int] = {}
+    run_order: list[str] = []
+    for track, work_id, passage in ordered_queue:
+        work = Work.from_dict({"id": work_id, **works_out[work_id]})
+        seq_by_work[work_id] = seq_by_work.get(work_id, 0) + 1
+        segment = Segment(
+            work_id=work_id,
+            seq=seq_by_work[work_id],
+            total=total_by_work[work_id],
+            text=passage["text"].strip(),
+            text_ko=passage.get("text_ko", "").strip(),
+            note=passage.get("note", "").strip(),
+        )
+        validate(work, segment)
+        entry = {
+            "work_id": segment.work_id,
+            "seq": segment.seq,
+            "total": segment.total,
+            "text": segment.text,
+        }
+        if segment.text_ko:
+            entry["text_ko"] = segment.text_ko
+        if segment.note:
+            entry["note"] = segment.note
+        queue_out.append(entry)
+        if not run_order or run_order[-1] != work_id:
+            run_order.append(work_id)
+
+    total_chars = sum(len(item["text"]) for item in queue_out)
+    print(f"\n발송 순서: {' → '.join(run_order)}")
+    print(f"총 {len(queue_out)}일치, {total_chars:,}자")
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "kakao_text_limit": KAKAO_TEXT_LIMIT,
         "works": works_out,
-        "tracks": tracks,
+        "queue": queue_out,
     }
 
 

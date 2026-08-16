@@ -40,8 +40,7 @@ jobs:
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
           # 비어 있으면 '나와의 채팅', 값이 있으면(쉼표로 구분) 그 친구들에게 보낸다.
           KAKAO_RECEIVER_UUIDS: ${{ secrets.KAKAO_RECEIVER_UUIDS }}
-          START_DATE: ${{ vars.START_DATE || '2026-01-01' }}
-          TRACK_PATTERN: ${{ vars.TRACK_PATTERN || 'kr,en' }}
+          START_DATE: ${{ vars.START_DATE || '2026-08-17' }}
           DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
           REFRESH_TOKEN_OUT: ${{ github.workspace }}/.refresh_token
         run: python -m src.main
