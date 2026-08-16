@@ -282,6 +282,23 @@
         "lang": "ko",
         "page": "감자"
       }
+    },
+    {
+      "id": "poe_black_cat",
+      "track": "en",
+      "title": "검은 고양이",
+      "author": "Edgar Allan Poe",
+      "author_death": 1849,
+      "published": 1843,
+      "source_url": "https://www.gutenberg.org/ebooks/2148",
+      "source": {
+        "type": "gutenberg",
+        "ebook_id": 2148,
+        "excerpt_after": "For the most wild, yet most homely narrative",
+        "excerpt_before": "THE FALL OF THE HOUSE OF USHER"
+      },
+      "title_original": "The Black Cat",
+      "author_ko": "에드거 앨런 포"
     }
   ],
   "_backlog_kr": [
@@ -329,23 +346,6 @@
     }
   ],
   "_backlog_en": [
-    {
-      "_note": "아래는 works에 아직 없다 — 완역이 끝나지 않았다. 이어서 번역하려면 data/sources/<id>.txt를 fetch_sources.py로 받고, data/passages/<id>.json에 원문·번역 회차를 채운 뒤 이 항목을 위 works 배열로 옮기면 된다.",
-      "id": "poe_black_cat",
-      "title": "검은 고양이",
-      "title_original": "The Black Cat",
-      "author": "Edgar Allan Poe",
-      "author_ko": "에드거 앨런 포",
-      "author_death": 1849,
-      "source_url": "https://www.gutenberg.org/ebooks/2148",
-      "source": {
-        "type": "gutenberg",
-        "ebook_id": 2148,
-        "excerpt_after": "For the most wild, yet most homely narrative",
-        "excerpt_before": "THE FALL OF THE HOUSE OF USHER"
-      },
-      "status": "원문 발췌 지점만 확인됨. 전문 미번역."
-    },
     {
       "id": "austen_pride_prejudice",
       "title": "오만과 편견",
