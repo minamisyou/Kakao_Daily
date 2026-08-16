@@ -98,26 +98,6 @@
       "source": { "type": "wikisource", "lang": "ko", "page": "종생기" }
     },
     {
-      "id": "kim_dongin_potato",
-      "track": "kr",
-      "title": "감자",
-      "author": "김동인",
-      "author_death": 1951,
-      "published": 1925,
-      "source_url": "https://ko.wikisource.org/wiki/감자_(김동인)",
-      "source": { "type": "wikisource", "lang": "ko", "page": "감자 (김동인)" }
-    },
-    {
-      "id": "kim_dongin_baettaragi",
-      "track": "kr",
-      "title": "배따라기",
-      "author": "김동인",
-      "author_death": 1951,
-      "published": 1921,
-      "source_url": "https://ko.wikisource.org/wiki/배따라기",
-      "source": { "type": "wikisource", "lang": "ko", "page": "배따라기" }
-    },
-    {
       "id": "kim_dongin_toes_resemble",
       "track": "kr",
       "title": "발가락이 닮았다",
@@ -166,16 +146,6 @@
       "published": 1934,
       "source_url": "https://ko.wikisource.org/wiki/레디메이드_인생",
       "source": { "type": "wikisource", "lang": "ko", "page": "레디메이드 인생" }
-    },
-    {
-      "id": "na_dohyang_watermill",
-      "track": "kr",
-      "title": "물레방아",
-      "author": "나도향",
-      "author_death": 1926,
-      "published": 1925,
-      "source_url": "https://ko.wikisource.org/wiki/물레방아",
-      "source": { "type": "wikisource", "lang": "ko", "page": "물레방아" }
     },
     {
       "id": "na_dohyang_mulberry",
@@ -247,6 +217,33 @@
       "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
       "source": { "type": "wikisource", "lang": "ko", "page": "벙어리 삼룡이" },
       "status": "fetch_sources.py가 '== 라이선스 ==' 상용구만 받아왔다 (19바이트). 본문이 하위 문서로 나뉘어 있거나 문서 제목이 다른 것으로 보인다. 위키문헌에서 실제 문서 구조를 확인하고 source.page를 고친 뒤 works로 옮길 것."
+    },
+    {
+      "id": "kim_dongin_potato",
+      "title": "감자",
+      "author": "김동인",
+      "author_death": 1951,
+      "source_url": "https://ko.wikisource.org/wiki/감자_(김동인)",
+      "source": { "type": "wikisource", "lang": "ko", "page": "감자 (김동인)" },
+      "status": "'감자 (김동인)' 문서가 없다는 응답. 소설 제목만 있는 페이지(문서 제목 뒤에 괄호 소거자가 없거나 다른 형태)일 가능성. 실제 문서 제목을 확인하고 source.page를 고친 뒤 works로 옮길 것."
+    },
+    {
+      "id": "kim_dongin_baettaragi",
+      "title": "배따라기",
+      "author": "김동인",
+      "author_death": 1951,
+      "source_url": "https://ko.wikisource.org/wiki/배따라기",
+      "source": { "type": "wikisource", "lang": "ko", "page": "배따라기" },
+      "status": "문서는 있지만 본문(extract)이 비어 있음 — 넘겨주기(redirect)나 동음이의어 안내 문서일 가능성. 실제 문서 구조를 확인할 것."
+    },
+    {
+      "id": "na_dohyang_watermill",
+      "title": "물레방아",
+      "author": "나도향",
+      "author_death": 1926,
+      "source_url": "https://ko.wikisource.org/wiki/물레방아",
+      "source": { "type": "wikisource", "lang": "ko", "page": "물레방아" },
+      "status": "'== 라이선스 ==' 상용구만 받아왔다 (10바이트). 벙어리 삼룡이와 같은 증상 — 본문이 하위 문서로 나뉘어 있을 가능성."
     }
   ],
 

@@ -42,9 +42,13 @@ GUTENBERG_END = re.compile(
 MIN_EXTRACT_CHARS = 500
 
 #: 위키문헌은 본문 뒤에 "== 라이선스 ==" 같은 상용구 섹션을 붙인다.
-#: 소설 본문에는 MediaWiki 섹션 헤딩이 나올 일이 없으므로, 이런 줄을
-#: 만나면 그 앞까지만 본문으로 친다.
-_TRAILING_SECTION = re.compile(r"\n==+\s*[^\n=]+\s*==+\n")
+#: 처음엔 "MediaWiki 섹션 헤딩은 소설 본문에 안 나온다"고 가정하고
+#: 아무 "==...==" 줄이나 만나면 그 앞까지만 본문으로 잘랐는데, 틀린
+#: 가정이었다 — 일부 작품은 본문 자체가 "== 1 ==", "== 2 =="처럼 장
+#: 번호로 나뉘어 있어서, 그 장 헤딩을 상용구로 오인해 2장부터 통째로
+#: 잘라낸 적이 있다(탈출기·뽕에서 실제로 발생). 그래서 알려진 상용구
+#: 제목만 상용구로 취급한다.
+_TRAILING_SECTION = re.compile(r"\n==+\s*(라이선스|저작권|License)\s*==+\n", re.IGNORECASE)
 
 
 class FetchError(Exception):
