@@ -15,7 +15,11 @@
       "author_death": 1937,
       "published": 1935,
       "source_url": "https://ko.wikisource.org/wiki/봄봄",
-      "source": { "type": "wikisource", "lang": "ko", "page": "봄봄" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "봄봄"
+      }
     },
     {
       "id": "hyeon_jingeon_lucky_day",
@@ -25,7 +29,11 @@
       "author_death": 1943,
       "published": 1924,
       "source_url": "https://ko.wikisource.org/wiki/운수_좋은_날",
-      "source": { "type": "wikisource", "lang": "ko", "page": "운수 좋은 날" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "운수 좋은 날"
+      }
     },
     {
       "id": "yi_sang_wings",
@@ -35,7 +43,11 @@
       "author_death": 1937,
       "published": 1936,
       "source_url": "https://ko.wikisource.org/wiki/날개",
-      "source": { "type": "wikisource", "lang": "ko", "page": "날개" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "날개"
+      }
     },
     {
       "id": "kim_yujeong_camellia",
@@ -45,7 +57,11 @@
       "author_death": 1937,
       "published": 1936,
       "source_url": "https://ko.wikisource.org/wiki/동백꽃",
-      "source": { "type": "wikisource", "lang": "ko", "page": "동백꽃" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "동백꽃"
+      }
     },
     {
       "id": "kim_yujeong_manmubang",
@@ -55,7 +71,11 @@
       "author_death": 1937,
       "published": 1935,
       "source_url": "https://ko.wikisource.org/wiki/만무방",
-      "source": { "type": "wikisource", "lang": "ko", "page": "만무방" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "만무방"
+      }
     },
     {
       "id": "kim_yujeong_ttangbyeot",
@@ -65,7 +85,11 @@
       "author_death": 1937,
       "published": 1937,
       "source_url": "https://ko.wikisource.org/wiki/땡볕",
-      "source": { "type": "wikisource", "lang": "ko", "page": "땡볕" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "땡볕"
+      }
     },
     {
       "id": "hyeon_jingeon_hometown",
@@ -75,7 +99,11 @@
       "author_death": 1943,
       "published": 1926,
       "source_url": "https://ko.wikisource.org/wiki/고향_(현진건)",
-      "source": { "type": "wikisource", "lang": "ko", "page": "고향 (현진건)" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "고향 (현진건)"
+      }
     },
     {
       "id": "hyeon_jingeon_b_dorm_mistress",
@@ -85,7 +113,11 @@
       "author_death": 1943,
       "published": 1925,
       "source_url": "https://ko.wikisource.org/wiki/B사감과_러브레터",
-      "source": { "type": "wikisource", "lang": "ko", "page": "B사감과 러브레터" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "B사감과 러브레터"
+      }
     },
     {
       "id": "yi_sang_jongsaenggi",
@@ -95,7 +127,11 @@
       "author_death": 1937,
       "published": 1937,
       "source_url": "https://ko.wikisource.org/wiki/종생기",
-      "source": { "type": "wikisource", "lang": "ko", "page": "종생기" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "종생기"
+      }
     },
     {
       "id": "kim_dongin_toes_resemble",
@@ -105,7 +141,11 @@
       "author_death": 1951,
       "published": 1932,
       "source_url": "https://ko.wikisource.org/wiki/발가락이_닮았다",
-      "source": { "type": "wikisource", "lang": "ko", "page": "발가락이 닮았다" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "발가락이 닮았다"
+      }
     },
     {
       "id": "choi_seohae_escape",
@@ -115,7 +155,11 @@
       "author_death": 1932,
       "published": 1925,
       "source_url": "https://ko.wikisource.org/wiki/탈출기",
-      "source": { "type": "wikisource", "lang": "ko", "page": "탈출기" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "탈출기"
+      }
     },
     {
       "id": "choi_seohae_crimson_flame",
@@ -125,7 +169,11 @@
       "author_death": 1932,
       "published": 1927,
       "source_url": "https://ko.wikisource.org/wiki/홍염",
-      "source": { "type": "wikisource", "lang": "ko", "page": "홍염" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "홍염"
+      }
     },
     {
       "id": "chae_manshik_chisuk",
@@ -135,7 +183,11 @@
       "author_death": 1950,
       "published": 1938,
       "source_url": "https://ko.wikisource.org/wiki/치숙",
-      "source": { "type": "wikisource", "lang": "ko", "page": "치숙" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "치숙"
+      }
     },
     {
       "id": "chae_manshik_readymade_life",
@@ -145,7 +197,11 @@
       "author_death": 1950,
       "published": 1934,
       "source_url": "https://ko.wikisource.org/wiki/레디메이드_인생",
-      "source": { "type": "wikisource", "lang": "ko", "page": "레디메이드 인생" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "레디메이드 인생"
+      }
     },
     {
       "id": "na_dohyang_mulberry",
@@ -155,7 +211,11 @@
       "author_death": 1926,
       "published": 1925,
       "source_url": "https://ko.wikisource.org/wiki/뽕",
-      "source": { "type": "wikisource", "lang": "ko", "page": "뽕" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "뽕"
+      }
     },
     {
       "id": "kang_gyeongae_underground_village",
@@ -165,9 +225,12 @@
       "author_death": 1944,
       "published": 1936,
       "source_url": "https://ko.wikisource.org/wiki/지하촌",
-      "source": { "type": "wikisource", "lang": "ko", "page": "지하촌" }
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "지하촌"
+      }
     },
-
     {
       "id": "poe_tell_tale_heart",
       "track": "en",
@@ -205,48 +268,65 @@
         "excerpt_before": "THE IMP OF THE PERVERSE"
       },
       "translation_by": "Claude (전문 완역, 회차별로 저장소에서 확인·수정 가능)"
-    }
-  ],
-
-  "_backlog_kr": [
+    },
     {
       "id": "na_dohyang_samnyong",
+      "track": "kr",
       "title": "벙어리 삼룡이",
       "author": "나도향",
       "author_death": 1926,
+      "published": 1925,
       "source_url": "https://ko.wikisource.org/wiki/벙어리_삼룡이",
-      "source": { "type": "wikisource", "lang": "ko", "page": "벙어리 삼룡이" },
-      "status": "fetch_sources.py가 '== 라이선스 ==' 상용구만 받아왔다 (19바이트). 본문이 하위 문서로 나뉘어 있거나 문서 제목이 다른 것으로 보인다. 위키문헌에서 실제 문서 구조를 확인하고 source.page를 고친 뒤 works로 옮길 것."
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "벙어리 삼룡이"
+      }
     },
     {
       "id": "kim_dongin_potato",
+      "track": "kr",
       "title": "감자",
       "author": "김동인",
       "author_death": 1951,
-      "source_url": "https://ko.wikisource.org/wiki/감자_(김동인)",
-      "source": { "type": "wikisource", "lang": "ko", "page": "감자 (김동인)" },
-      "status": "'감자 (김동인)' 문서가 없다는 응답. 소설 제목만 있는 페이지(문서 제목 뒤에 괄호 소거자가 없거나 다른 형태)일 가능성. 실제 문서 제목을 확인하고 source.page를 고친 뒤 works로 옮길 것."
+      "published": 1925,
+      "source_url": "https://ko.wikisource.org/wiki/감자",
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "감자"
+      }
     },
     {
       "id": "kim_dongin_baettaragi",
+      "track": "kr",
       "title": "배따라기",
       "author": "김동인",
       "author_death": 1951,
+      "published": 1921,
       "source_url": "https://ko.wikisource.org/wiki/배따라기",
-      "source": { "type": "wikisource", "lang": "ko", "page": "배따라기" },
-      "status": "문서는 있지만 본문(extract)이 비어 있음 — 넘겨주기(redirect)나 동음이의어 안내 문서일 가능성. 실제 문서 구조를 확인할 것."
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "배따라기"
+      }
     },
     {
       "id": "na_dohyang_watermill",
+      "track": "kr",
       "title": "물레방아",
       "author": "나도향",
       "author_death": 1926,
+      "published": 1925,
       "source_url": "https://ko.wikisource.org/wiki/물레방아",
-      "source": { "type": "wikisource", "lang": "ko", "page": "물레방아" },
-      "status": "'== 라이선스 ==' 상용구만 받아왔다 (10바이트). 벙어리 삼룡이와 같은 증상 — 본문이 하위 문서로 나뉘어 있을 가능성."
+      "source": {
+        "type": "wikisource",
+        "lang": "ko",
+        "page": "물레방아"
+      }
     }
   ],
-
+  "_backlog_kr": [],
   "_backlog_en": [
     {
       "_note": "아래는 works에 아직 없다 — 완역이 끝나지 않았다. 이어서 번역하려면 data/sources/<id>.txt를 fetch_sources.py로 받고, data/passages/<id>.json에 원문·번역 회차를 채운 뒤 이 항목을 위 works 배열로 옮기면 된다.",
@@ -273,7 +353,10 @@
       "author_ko": "제인 오스틴",
       "author_death": 1817,
       "source_url": "https://www.gutenberg.org/ebooks/1342",
-      "source": { "type": "gutenberg", "ebook_id": 1342 },
+      "source": {
+        "type": "gutenberg",
+        "ebook_id": 1342
+      },
       "status": "명대사 6개만 번역됨 (data/passages/austen_pride_prejudice.json). 전문 미완역."
     },
     {
@@ -284,7 +367,10 @@
       "author_ko": "찰스 디킨스",
       "author_death": 1870,
       "source_url": "https://www.gutenberg.org/ebooks/98",
-      "source": { "type": "gutenberg", "ebook_id": 98 },
+      "source": {
+        "type": "gutenberg",
+        "ebook_id": 98
+      },
       "status": "명대사 6개만 번역됨 (data/passages/dickens_two_cities.json). 전문 미완역."
     },
     {
@@ -295,7 +381,10 @@
       "author_ko": "메리 셸리",
       "author_death": 1851,
       "source_url": "https://www.gutenberg.org/ebooks/84",
-      "source": { "type": "gutenberg", "ebook_id": 84 },
+      "source": {
+        "type": "gutenberg",
+        "ebook_id": 84
+      },
       "status": "명대사 6개만 번역됨 (data/passages/shelley_frankenstein.json). 전문 미완역."
     }
   ]
